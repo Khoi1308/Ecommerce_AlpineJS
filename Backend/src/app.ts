@@ -33,6 +33,7 @@ app.get(
 // Main routes
 AppModule.setup(app);
 
+// Middleware
 app.use(errorHandler);
 
 app.listen(proc_env.PORT, async () => {

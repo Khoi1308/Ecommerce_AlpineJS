@@ -19,6 +19,7 @@ export const AppData = new DataSource({
   entities: [path.join(__dirname, "../modules/**/entities/*entity.{ts, js}")],
   // synchronize: true,
   logging: NODE_ENV === "development",
+  migrations: [path.join(__dirname, "../../migrations/*.{ts,js}")],
 });
 
 export const connectDB = async () => {

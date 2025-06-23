@@ -1,17 +1,38 @@
-import { Repository } from "typeorm";
-import { VertificationCode } from "../entities/vertificationCode.entity";
+import { MoreThan, Repository } from "typeorm";
+import { VerificationCode } from "../entities/verificationCode.entity";
 import { AppData } from "../../../config/db";
+import { verificationCodeType } from "../../../config/verificationCodeTypes";
+import { User } from "../../user/entities/user.entity";
 
-export class VerificationCodeRepository extends Repository<VertificationCode> {
+export class VerificationCodeRepository extends Repository<VerificationCode> {
   constructor() {
-    super(VertificationCode, AppData.manager);
+    super(VerificationCode, AppData.manager);
   }
 
   async createVerifyCode(
-    data: Partial<VertificationCode>,
-  ): Promise<VertificationCode> {
+    data: Partial<VerificationCode>,
+  ): Promise<VerificationCode> {
     const verifyCode = this.create(data);
 
     return this.save(verifyCode);
+  }
+
+  async getVericationCodeById(code: string): Promise<VerificationCode | null> {
+    return await this.createQueryBuilder("verificationCode")
+      .leftJoinAndSelect("verificationCode.user", "user")
+      .where("verificationCode.verificationId = :verificationId", {
+        verificationCodeId: code,
+      })
+      .getOne();
+  }
+
+  async countRecentResetCode(user: User, timethreshold: Date): Promise<number> {
+    return this.count({
+      where: {
+        user: user,
+        type: verificationCodeType.ResetPassword,
+        createAt: MoreThan(timethreshold),
+      },
+    });
   }
 }

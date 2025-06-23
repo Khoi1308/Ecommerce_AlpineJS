@@ -4,8 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "dev": "ts-node-dev --files src/app.ts index.d.ts",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "ts-node-dev --files src/app.ts"
+    "build": "tsc && cp ./package.json ./dist",
+    "start": "node ./dist/app.js",
+    "typeorm": "typeorm-ts-node-commonjs"
   },
   "keywords": [],
   "author": "",
@@ -16,7 +19,9 @@
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "express": "^5.1.0",
+    "googleapis": "^150.0.1",
     "jsonwebtoken": "^9.0.2",
+    "nodemailer": "^7.0.3",
     "pg": "^8.16.0",
     "reflect-metadata": "^0.2.2",
     "typeorm": "^0.3.24"
@@ -28,6 +33,7 @@
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.3",
     "@types/jsonwebtoken": "^9.0.9",
+    "@types/nodemailer": "^6.4.17",
     "dotenv": "^16.5.0",
     "eslint": "^9.28.0",
     "eslint-plugin-react": "^7.37.5",

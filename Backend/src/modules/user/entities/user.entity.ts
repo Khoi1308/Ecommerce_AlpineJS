@@ -3,12 +3,16 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
+  ManyToOne,
   OneToMany,
-  // OneToMany,
   PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from "typeorm";
 import { compareValue, hashValue } from "../../../utils/bcrypt";
-import { VertificationCode } from "../../auth/entities/vertificationCode.entity";
+import { VerificationCode } from "../../auth/entities/verificationCode.entity";
+import { Session } from "../../auth/entities/session.entity";
+import { Role } from "./role.entity";
 
 @Entity("users")
 export class User {
@@ -27,20 +31,24 @@ export class User {
   @Column({ default: false })
   verified!: boolean;
 
-  @Column({ default: "user" })
-  user_role!: "user" | "admin";
-
   @CreateDateColumn({ type: "timestamp with time zone" })
   createdAt!: Date;
 
-  @CreateDateColumn({ type: "timestamp with time zone" })
+  @UpdateDateColumn({ type: "timestamp with time zone" })
   updatedAt!: Date;
 
   @OneToMany(
-    () => VertificationCode,
+    () => VerificationCode,
     (verificationCode) => verificationCode.user,
   )
-  verificationCodes!: VertificationCode[];
+  verificationCodes!: VerificationCode[];
+
+  @OneToMany(() => Session, (session) => session.user)
+  sessions!: Session[];
+
+  @ManyToOne(() => Role)
+  @JoinColumn({ name: "roleId" })
+  role!: Role;
 
   async comparePassword(value: string): Promise<boolean> {
     return compareValue(value, this.password);

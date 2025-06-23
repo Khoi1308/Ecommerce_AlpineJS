@@ -9,8 +9,8 @@ import {
 import { User } from "../../user/entities/user.entity";
 import { verificationCodeType } from "../../../config/verificationCodeTypes";
 
-@Entity("vertification_codes")
-export class VertificationCode {
+@Entity("verification_codes")
+export class VerificationCode {
   @PrimaryGeneratedColumn("uuid")
   verificationId!: string;
 
