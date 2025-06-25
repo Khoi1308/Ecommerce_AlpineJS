@@ -7,6 +7,7 @@ import {
   rolesAuthorization,
   permissionsAuthorization,
 } from "./middlewares/authorization";
+import { ProductModule } from "./modules/product/product.module";
 
 export class AppModule {
   static setup(app: express.Application) {
@@ -24,6 +25,13 @@ export class AppModule {
       authenticate,
       rolesAuthorization("customer"),
       SessionModule,
+    );
+
+    app.use(
+      "/products",
+      authenticate,
+      rolesAuthorization("admin"),
+      ProductModule,
     );
   }
 }

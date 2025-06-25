@@ -31,3 +31,7 @@ export const CLIENT_SECRET = getEnv("CLIENT_SECRET");
 export const REDIRECT_URI = getEnv("REDIRECT_URI");
 export const GMAIL_TOKEN = getEnv("GMAIL_TOKEN");
 export const GMAIL_REFRESH = getEnv("GMAIL_REFRESH");
+// CLOUDINARY
+export const CLOUDINARY_NAME = getEnv("CLOUDINARY_NAME");
+export const CLOUDINARY_API_KEY = getEnv("CLOUDINARY_API_KEY");
+export const CLOUDINARY_SECRET = getEnv("CLOUDINARY_SECRET");

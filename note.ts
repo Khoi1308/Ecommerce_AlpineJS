@@ -1,0 +1,58 @@
+async createProduct(productData: CreateProductDto, imageFiles ?: Express.Multer.File[]): Promise < Product > {
+  let imageUrls: string[] = [];
+
+  // Upload ảnh lên Cloudinary nếu có
+  if(imageFiles && imageFiles.length > 0) {
+  const filePaths = imageFiles.map(file => file.path);
+  try {
+    imageUrls = await uploadMultipleImages(filePaths, 'products');
+  } catch (error) {
+    imageFiles.forEach(file => fs.unlinkSync(file.path));
+    throw error;
+  }
+  imageFiles.forEach(file => fs.unlinkSync(file.path));
+}
+
+// Validation
+if (!productData.product_name || !productData.product_price) {
+  throw new Error('Product name and price are required');
+}
+
+// Tạo product theo type
+let product: Product;
+
+switch (productData.product_type) {
+  case 'book':
+    if (!productData.author) {
+      throw new Error('Author is required for book');
+    }
+    product = this.bookRepository.create({
+      ...productData,
+      img_url: imageUrls,
+      author: productData.author,
+    });
+    break;
+
+  case 'clothing':
+    if (!productData.clothing_size) {
+      throw new Error('Clothing size is required for clothing');
+    }
+    product = this.clothingRepository.create({
+      ...productData,
+      img_url: imageUrls,
+      clothing_size: productData.clothing_size,
+    });
+    break;
+
+  default:
+    product = this.productRepository.create({
+      ...productData,
+      img_url: imageUrls,
+    });
+    break;
+}
+
+// Lưu và trả về đối tượng đơn lẻ
+const savedProduct = await this.productRepository.save(product);
+return savedProduct; // Trả về Product duy nhất
+  }
