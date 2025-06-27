@@ -1,12 +1,12 @@
 import express from "express";
 import { AuthModule } from "./modules/auth/auth.module";
 import { UserModule } from "./modules/user/user.module";
-import { authenticate } from "./middlewares/authentication";
+import { authenticate } from "./middlewares/authentication.middleware";
 import { SessionModule } from "./modules/session/session.module";
 import {
   rolesAuthorization,
   permissionsAuthorization,
-} from "./middlewares/authorization";
+} from "./middlewares/authorization.middleware";
 import { ProductModule } from "./modules/product/product.module";
 
 export class AppModule {

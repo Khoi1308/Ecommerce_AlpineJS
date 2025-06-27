@@ -4,7 +4,7 @@ import cors from "cors";
 import { connectDB } from "./config/db";
 import { APP_ORIGIN } from "./config/env";
 import cookieParser from "cookie-parser";
-import { errorHandler } from "./middlewares/errorHandler";
+import { errorHandler } from "./middlewares/errorHandler.middleware";
 import { catchErrors } from "./utils/catchErrors";
 import { AppModule } from "./app.module";
 import "reflect-metadata";

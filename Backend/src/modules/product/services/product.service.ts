@@ -22,19 +22,19 @@ export class ProductService {
   ): Promise<Product> {
     let imageUrls: string[] = [];
 
-    // Upload ảnh lên Cloudinary nếu có
+    // Upload images to Cloudinary (if have)
     if (imageFiles && imageFiles.length > 0) {
       const filePaths = imageFiles.map((file) => file.path);
       try {
-        imageUrls = await uploadMultipleImages(filePaths, "products");
+        imageUrls = await uploadMultipleImages(filePaths);
       } catch (error) {
         imageFiles.forEach((file) => {
-          if (fs.existsSync(file.path)) fs.unlinkSync(file.path); // Chỉ xóa nếu file tồn tại
+          if (fs.existsSync(file.path)) fs.unlinkSync(file.path); // Remove image file if exist
         });
         throw error;
       }
       imageFiles.forEach((file) => {
-        if (fs.existsSync(file.path)) fs.unlinkSync(file.path); // Chỉ xóa nếu file tồn tại
+        if (fs.existsSync(file.path)) fs.unlinkSync(file.path); // Remove image file if exist
       });
     }
 
@@ -55,7 +55,7 @@ export class ProductService {
           ...productData,
           img_url: imageUrls,
           author: productData.author,
-        }); // Ép kiểu tạm thời để tránh lỗi TypeScript
+        });
         break;
 
       case "clothing":
@@ -78,5 +78,21 @@ export class ProductService {
     }
 
     return await this.productRepository.save(product);
+  }
+
+  async findAllProduct(): Promise<Product[]> {
+    return await this.productRepository.find({
+      relations: ["stores"],
+    });
+  }
+
+  async findProductById(productId: string): Promise<Product[]> {
+    const products = this.productRepository.find({
+      where: {
+        productId: productId,
+      },
+    });
+
+    return products;
   }
 }

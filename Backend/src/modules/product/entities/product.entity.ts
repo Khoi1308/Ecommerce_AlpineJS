@@ -1,11 +1,13 @@
 import {
   ChildEntity,
   Column,
+  CreateDateColumn,
   Entity,
   ManyToMany,
   OneToMany,
   PrimaryGeneratedColumn,
   TableInheritance,
+  UpdateDateColumn,
 } from "typeorm";
 import { Store } from "../../store/entities/store.entity";
 import { OrderItem } from "../../order/entities/order.entity";
@@ -54,6 +56,12 @@ export class Product {
 
   @OneToMany(() => OrderItem, (orderItem) => orderItem.product)
   orderItems!: OrderItem[];
+
+  @CreateDateColumn({ type: "timestamp with time zone" })
+  createdAt!: Date;
+
+  @UpdateDateColumn({ type: "timestamp with time zone" })
+  updatesAt!: Date;
 }
 
 @ChildEntity()
