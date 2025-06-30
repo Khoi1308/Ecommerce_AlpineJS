@@ -37,3 +37,23 @@ export const uploadMultipleImages = async (
     throw new Error(`Message ${error}`);
   }
 };
+
+export const deleteMultipleImages = async (
+  imageUrls: string[],
+): Promise<void> => {
+  try {
+    const publicIds = imageUrls.map((url) => getPublicIdFromUrl(url));
+    await Promise.all(
+      publicIds.map((publicId) => cloudinary.uploader.destroy(publicId)),
+    );
+  } catch (error) {
+    throw new Error(`Failed to delete images: ${error}`);
+  }
+};
+
+export const getPublicIdFromUrl = (url: string): string => {
+  const parts = url.split("/");
+  const filename = parts[parts.length - 1];
+  const folder = parts[parts.length - 2];
+  return `${folder}/${filename.split(".")[0]}`;
+};

@@ -1,6 +1,6 @@
 import { CREATED, SUCCESS } from "../../../config/http";
 import { catchErrors } from "../../../utils/catchErrors";
-import { Product } from "../entities/product.entity";
+import { UpdateProductDto } from "../dtos/update_product.dto";
 import { ProductService } from "../services/product.service";
 
 export class ProductController {
@@ -12,7 +12,7 @@ export class ProductController {
 
   // Get All products
   getAllProductHandler = catchErrors(async (req, res) => {
-    const products = await this.productService.findAllProduct();
+    const products = await this.productService.getAllProducts();
 
     res.status(SUCCESS).json({
       success: true,
@@ -22,7 +22,7 @@ export class ProductController {
 
   // Get product by ID
   getProductById = catchErrors(async (req, res) => {
-    const products = await this.productService.findProductById(req.params.id);
+    const products = await this.productService.getProductById(req.params.id);
 
     res.status(SUCCESS).json({
       data: products,
@@ -47,7 +47,62 @@ export class ProductController {
 
   // Update product
   updateProductHandler = catchErrors(async (req, res) => {
-    // const productData = req.body;
-    // const
+    const { id } = req.params;
+    const update_data: UpdateProductDto = req.body;
+    const imageFiles = req.files as Express.Multer.File[];
+
+    // Parse remove images
+    if (req.body.removeImages) {
+      update_data.removeImages = JSON.parse(req.body.removeImages);
+    }
+
+    // Add images
+    if (imageFiles && imageFiles.length > 0) {
+      update_data.addImages = imageFiles;
+    }
+
+    const updated_product = await this.productService.updateProduct(
+      id,
+      update_data,
+    );
+
+    res.status(SUCCESS).json({
+      success: true,
+      message: updated_product.hasChange
+        ? "Product's data updated successfully"
+        : "No changes detected",
+      data: updated_product.product,
+      hasChange: updated_product.hasChange,
+    });
+  });
+
+  deleteImageHandler = catchErrors(async (req, res) => {
+    const { id } = req.params;
+
+    const { images } = req.body;
+    const product = await this.productService.deleteImagesInProduct(id, images);
+
+    res.status(SUCCESS).json({
+      success: true,
+      message: "Images are deleted",
+      data: product,
+    });
+  });
+
+  addImageHandler = catchErrors(async (req, res) => {
+    const { id } = req.params;
+
+    const image_files = req.files as Express.Multer.File[];
+
+    const updated_product = await this.productService.addImagesInProduct(
+      id,
+      image_files,
+    );
+
+    res.status(SUCCESS).json({
+      success: true,
+      message: "Images are uploaded",
+      data: updated_product,
+    });
   });
 }

@@ -14,6 +14,23 @@ ProductModule.post(
   productController.createProductHandler,
 );
 // PUT
-ProductModule.put("/:id", productController.updateProductHandler);
+ProductModule.put(
+  "/:id",
+  uploadImages.array("images", 10),
+  productController.updateProductHandler,
+);
+
 // GET product by ID
+ProductModule.delete(
+  "/delete/images/:id",
+  productController.deleteImageHandler,
+);
+
+// Modify images
 ProductModule.get("/:id", productController.getProductById);
+
+ProductModule.post(
+  "/add/images/:id",
+  uploadImages.array("images", 10),
+  productController.addImageHandler,
+);
