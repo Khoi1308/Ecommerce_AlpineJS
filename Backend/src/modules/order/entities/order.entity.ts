@@ -15,7 +15,6 @@ import { Fee } from "./fee.entity";
 import { Voucher } from "./voucher.entity";
 import { Product } from "../../product/entities/product.entity";
 import { Address } from "../../user/entities/address.entity";
-import { nullable } from "zod";
 
 @Entity("orders")
 export class Order {

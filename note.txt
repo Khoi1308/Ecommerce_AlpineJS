@@ -1,0 +1,12 @@
+- Kafka
+  + TOPIC: chứ nhiều bản sao của queue. Sử dụng TOPIC khác nhau để phân loại data khác nhau (1 TOPIC có thể chứa nhiều partition)
+  + PARTITIONS: các chiến lược phân vùng: 
+    - Pooling
+    - Ngẫu nhiên
+    - Hash 
+  + BROKER: quản lý các TOPIC chứa trong BROKER, PARTITION, DATA
+  + CONSUMER GROUP? 
+  + REPLICATION:
+  + MASTER SURL
+- Event sourcing architecture
+- Message queue architecture: 
