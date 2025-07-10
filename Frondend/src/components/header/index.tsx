@@ -6,7 +6,7 @@ import { IoArrowForwardSharp } from "react-icons/io5";
 export const Header = () => {
   const navigate = useNavigate();
   return (
-    <header>
+    <header >
       {/* Top Strip */}
       <div className="top-strip py-2 border-t-[1px] border-gray-250 border-b-[1px]">
         <div className="container">
@@ -52,9 +52,9 @@ export const Header = () => {
             <Button
               // component={Link}
               // to="/login"
-              onClick={() => navigate("/login")}
+              onClick={() => navigate("/auth/login")}
               variant="outlined" //
-              className="!border-gray-500 !rounded-full hover:bg-gray-100 gap-2 !text-gray-800"
+              className="!border-gray-500 !rounded-full hover:bg-gray-100 gap-2 !text-gray-800 shadow-lg"
             >
               Login
               <IoArrowForwardSharp></IoArrowForwardSharp>
