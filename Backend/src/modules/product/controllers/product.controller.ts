@@ -31,11 +31,11 @@ export class ProductController {
 
   // Create product
   createProductHandler = catchErrors(async (req, res) => {
+    const userId = req.userId;
     const productData = req.body;
-    const imageFiles = req.files as Express.Multer.File[];
     const new_product = await this.productService.createProduct(
       productData,
-      imageFiles,
+      userId,
     );
 
     res.status(CREATED).json({

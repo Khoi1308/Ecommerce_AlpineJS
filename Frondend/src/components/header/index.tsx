@@ -1,7 +1,10 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { Search } from "../search";
+import { Button } from "@mui/material";
+import { IoArrowForwardSharp } from "react-icons/io5";
 
 export const Header = () => {
+  const navigate = useNavigate();
   return (
     <header>
       {/* Top Strip */}
@@ -23,7 +26,10 @@ export const Header = () => {
                   </Link>
                 </li>
                 <li className="">
-                  <Link to="order-tracking" className="hover:text-cyan-600 transition">
+                  <Link
+                    to="order-tracking"
+                    className="hover:text-cyan-600 transition"
+                  >
                     Order Tracking
                   </Link>
                 </li>
@@ -35,7 +41,26 @@ export const Header = () => {
 
       {/* Navigator */}
       <div className="header py-3">
-
+        <div className="container flex items-center justify-between">
+          <div className="">{/*Image log*/}</div>
+          {/*Search box*/}
+          <div className="">
+            <Search />
+          </div>
+          {/*Login account*/}
+          <div className="justify-end">
+            <Button
+              // component={Link}
+              // to="/login"
+              onClick={() => navigate("/login")}
+              variant="outlined" //
+              className="!border-gray-500 !rounded-full hover:bg-gray-100 gap-2 !text-gray-800"
+            >
+              Login
+              <IoArrowForwardSharp></IoArrowForwardSharp>
+            </Button>
+          </div>
+        </div>
       </div>
     </header>
   );

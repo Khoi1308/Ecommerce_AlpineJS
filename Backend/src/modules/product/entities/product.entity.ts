@@ -1,19 +1,15 @@
 import {
-  ChildEntity,
   Column,
   CreateDateColumn,
   Entity,
-  ManyToMany,
-  OneToMany,
+  JoinColumn,
+  ManyToOne,
   PrimaryGeneratedColumn,
-  TableInheritance,
   UpdateDateColumn,
 } from "typeorm";
-import { Store } from "../../store/entities/store.entity";
-import { OrderItem } from "../../order/entities/order.entity";
+import { Category } from "../../category/entities/category.entity";
 
 @Entity("products")
-@TableInheritance({ column: { type: "varchar", name: "product_type" } })
 export class Product {
   @PrimaryGeneratedColumn("uuid")
   productId!: string;
@@ -21,57 +17,35 @@ export class Product {
   @Column()
   product_name!: string;
 
-  @Column({ type: "decimal" })
+  @Column({ type: "decimal", precision: 10, scale: 2, default: 0 })
   product_price!: number;
 
-  @Column({ type: "text" })
-  description!: string;
-
-  @Column()
-  product_type!: string;
+  // @Column({ type: "decimal" })
+  // product_discount!: number;
 
   @Column({ type: "text", array: true, nullable: true, default: [] })
   img_url!: string[];
 
-  @Column({ type: "decimal" })
-  product_discount!: number;
-
-  // Inventory management
-  @Column({ type: "int", default: 0 })
-  stock_quantity!: number; // Number of product in stock
-
-  @Column({ type: "int", default: 0 })
-  reversed_quantity!: number; // Number of product in order
+  @Column({ type: "text", nullable: true })
+  description!: string;
 
   // Product status
   @Column({ default: true })
   is_active!: boolean;
 
   @Column({ default: false })
-  is_signature!: boolean; // Product is signature
+  is_signature!: boolean;
 
-  // store_product relationship
-  @ManyToMany(() => Store, (store) => store.products)
-  stores!: Store[];
-
-  @OneToMany(() => OrderItem, (orderItem) => orderItem.product)
-  orderItems!: OrderItem[];
+  // @Column({ default: false })
+  // is_signature!: boolean; // Check product is signature
 
   @CreateDateColumn({ type: "timestamp with time zone" })
   createdAt!: Date;
 
   @UpdateDateColumn({ type: "timestamp with time zone" })
   updatesAt!: Date;
-}
 
-@ChildEntity()
-export class Book extends Product {
-  @Column()
-  author!: string;
-}
-
-@ChildEntity()
-export class Clothing extends Product {
-  @Column()
-  clothing_size!: string;
+  @ManyToOne(() => Category, (category) => category.categoryId)
+  @JoinColumn({ name: "category_id" })
+  category!: Category;
 }

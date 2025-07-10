@@ -1,0 +1,4 @@
+Folder contructs:
+- Pages
+- Components
+- Context: Store all the states and functions of application sotat we can easily access the states and function in any component from this context

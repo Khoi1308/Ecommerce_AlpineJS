@@ -13,17 +13,13 @@ import {
 import { User } from "../../user/entities/user.entity";
 import { Fee } from "./fee.entity";
 import { Voucher } from "./voucher.entity";
-import { Product } from "../../product/entities/product.entity";
 import { Address } from "../../user/entities/address.entity";
+import { Shipping } from "./shipping.entity";
 
 @Entity("orders")
 export class Order {
   @PrimaryGeneratedColumn("uuid")
   orderId!: string;
-
-  @ManyToOne(() => User, (user) => user.orders)
-  @JoinColumn({ name: "userId" })
-  user!: User;
 
   @Column({ type: "decimal" })
   total_price!: number;
@@ -33,6 +29,17 @@ export class Order {
 
   @Column({ nullable: false })
   status!: string;
+
+  @CreateDateColumn({ type: "timestamp with time zone" })
+  createdAt!: Date;
+
+  @UpdateDateColumn({ type: "timestamp with time zone" })
+  updatedAt!: Date;
+
+  // RELATIONSHIP
+  @ManyToOne(() => User, (user) => user.orders)
+  @JoinColumn({ name: "user_id" })
+  user!: User;
 
   @ManyToMany(() => Fee)
   @JoinTable({
@@ -48,18 +55,13 @@ export class Order {
   @OneToMany(() => OrderItem, (orderItem) => orderItem.order)
   orderItems!: OrderItem[];
 
-  @ManyToOne(() => Address, { nullable: true })
-  @JoinColumn({ name: "order_address" })
-  order_address!: Address | null;
+  @ManyToOne(() => Address)
+  @JoinColumn({ name: "address_id" })
+  address!: Address | null;
 
-  @CreateDateColumn({
-    type: "timestamp with time zone",
-    default: () => "CURRENT_TIMESTAMP",
-  })
-  createdAt!: Date;
-
-  @UpdateDateColumn({ type: "timestamp with time zone" })
-  updatedAt!: Date;
+  @ManyToOne(() => Shipping)
+  @JoinColumn({ name: "shipping_id" })
+  shipping!: Shipping;
 }
 
 @Entity("orders_vouchers")
@@ -87,10 +89,6 @@ export class OrderItem {
   @ManyToOne(() => Order, (order) => order.orderItems)
   @JoinColumn({ name: "orderId" })
   order!: Order;
-
-  @ManyToOne(() => Product, (product) => product.orderItems)
-  @JoinColumn({ name: "productId" })
-  product!: Product;
 
   @Column({ type: "decimal", precision: 10, scale: 2 })
   unit_price!: number; // Product's price at created order

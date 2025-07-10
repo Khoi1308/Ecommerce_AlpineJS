@@ -8,11 +8,7 @@ const productController = new ProductController();
 // GET: All method
 ProductModule.get("/", productController.getAllProductHandler);
 // POST
-ProductModule.post(
-  "/",
-  uploadImages.array("images", 10),
-  productController.createProductHandler,
-);
+ProductModule.post("/", productController.createProductHandler);
 // PUT
 ProductModule.put(
   "/:id",

@@ -1,0 +1,214 @@
+Table Payment {
+  paymentId uuid [primary key]
+  order_id uuid [not null]
+  payment_method varchar(50) [not null]
+  payment_amount decimal(8,2) [not null]
+  payment_status varchar(50) [not null, default: "PENDING"]
+  transaction_id varchar(255) // ID from payment gateway
+  paid_at datetime
+  failed_reason text
+  createdAt datetime [default: 'now()']
+  updatesAt datetime [default: 'now()']
+}
+Ref payment_orders: Payment.order_id > Order.orderId
+
+Table PaymentHistory {
+  paymentHistoryId uuid [primary key]
+  payment_id uuid [not null]
+  payment_status varchar(50) [not null, default: "PENDING"]
+  payment_amount decimal(8, 2) [not null]
+  gateway_response text
+  createdAt datetime [default: 'now()']
+  createdBy uuid [not null]
+}
+
+Ref payment_history_user: PaymentHistory.createdBy > User.userId
+Ref payment_history: PaymentHistory.payment_id > Payment.paymentId
+
+Table Order {
+  orderId uuid [primary key]
+  user_id uuid [not null]
+  address_id uuid [not null]
+  total_price decimal(8, 2) [not null] // Total
+  order_status varchar(50) [not null, default: "PENDING"]
+  payment_status varchar(50) [not null, default: "UNPAID"] // UNPAID, PAID
+  createdAt datetime [default: 'now()']
+  updatesAt datetime [default: 'now()']
+}
+Ref user_order: Order.user_id > User.userId
+Ref address_orders: Address.addressId < Order.address_id // Many-to-one
+
+Table OrderHistory {
+  orderHistoryID uuid [primary key]
+  order_id uuid [not null]
+  order_status varchar(50) [not null]
+  reason text
+  createdAt datetime [default: 'now()']
+  createdBy uuid [not null]
+}
+
+Ref order_history: OrderHistory.order_id > Order.orderId
+Ref order_history_user: OrderHistory.createdBy >  User.userId
+
+Table User {
+  userId uuid [primary key]
+  username varchar(255) [not null]
+  email varchar(255) [not null]
+  password varchar(255) [not null]
+  is_verified bool [default: false]
+  role_id uuid [not null]
+  createdAt datetime [default: 'now()']
+  updatesAt datetime [default: 'now()']
+}
+
+Table UserAddress {
+  userAddressId uuid [primary key]
+  user_id uuid [not null]
+  address_id uuid [not null]
+  is_default bool [default: false]
+  createdAt datetime [default: 'now()']
+}
+Ref address_users: UserAddress.user_id > User.userId // Many-to-one
+Ref user_addresses: UserAddress.address_id > Address.addressId // Many-to-one
+
+Table Address {
+  addressId uuid [primary key]
+  street varchar(255) [not null]
+  district varchar(255)
+  city varchar(255) [not null]
+  postal_code varchar(255) [not null]
+  country varchar(255) [not null]
+  createdAt datetime [default: 'now()']
+  updatesAt datetime [default: 'now()']
+}
+
+Table Product {
+  productId uuid [primary key]
+  product_name varchar(255) [not null]
+  product_price decimal(8, 2) [default: 0]
+  product_discount decimal(8, 2) [default: 0]
+  images text[]
+  description text
+  product_type varchar(255) [not null]
+  is_active bool
+  is_signature bool
+  createdAt datetime [default: 'now()']
+  updatesAt datetime [default: 'now()']
+}
+
+Table OrderItem {
+  orderItemId uuid [primary key]
+  unit_price decimal(8, 2) [default: 0]
+  quantity int
+  order_id uuid [not null]
+  note text
+  product_id uuid [not null]
+  createdAt datetime [default: 'now()']
+  updatesAt datetime [default: 'now()']
+}
+
+Ref order_items: OrderItem.order_id > Order.orderId
+Ref product_items: OrderItem.product_id > Product.productId
+
+Table ProductCategory {
+  product_id uuid [not null]
+  category_id uuid [not null]
+  createdAt datetime [default: 'now()']
+}
+Ref product_categories: ProductCategory.product_id > Product.productId
+Ref category_products: ProductCategory.category_id > Category.categoryId
+
+Table Category {
+  categoryId uuid [primary key]
+  category_name varchar(255)
+  description text
+  createdAt datetime [default: 'now()']
+}
+
+Table Clothing {
+  product_id uuid [primary key]
+  clothing_brand varchar(255)
+  clothing_size varchar(255)
+  clothing_color varchar(255)
+}
+Ref clothing_product: Clothing.product_id - Product.productId
+
+Table Book {
+  product_id uuid [primary key]
+  book_author varchar(255)
+}
+Ref book_product: Book.product_id - Product.productId
+
+Table Inventory {
+  inventoryId uuid [primary key]
+  product_id uuid [not null]
+  quantity_on_stock int [default: 0]
+  available_stock int [default: 0]
+  reserved_stock int [default: 0]
+  createdAt datetime [default: 'now()']
+  createdBy uuid [not null]
+}
+
+Ref inventory_user: Inventory.createdBy > User.userId
+Ref product_inventories: Inventory.product_id > Product.productId
+
+Table Cart {
+  cartId uuid [primary key]
+  user_id uuid [not null]
+  createdAt datetime [default: 'now()']
+  updatesAt datetime [default: 'now()']
+}
+
+Ref user_cart: Cart.user_id > User.userId
+
+Table CartItem {
+  cartItemId uuid [primary key]
+  cart_id uuid [not null]
+  product_id uuid [not null]
+  quantity int [not null]
+  unit_price decimal(8, 2) [not null]
+  is_selected bool [default: false]
+  createdAt datetime [default: 'now()']
+  updatesAt datetime [default: 'now()']
+}
+
+Ref cart_items: CartItem.cart_id > Cart.cartId
+Ref product_items: CartItem.product_id > Product.productId
+
+Table Voucher {
+  voucherId uuid [primary key]
+  voucher_code varchar(50) [not null, unique]
+  voucher_type varchar(55)
+  discount_value decimal(8, 2) [not null]
+  min_discount decimal(8, 2) [default: 0]
+  max_discount decimal(8, 2)
+  voucher_quantity int [default: 1]
+  used_quantity int [default: 0]
+  is_actived bool [default: false]
+  createdAt datetime [default: 'now()']
+  expiresAt datetime [default: 'now()']
+}
+
+Table VoucherOrder {
+  voucherOrderId uuid [primary key]
+  voucher_id uuid [not null]
+  order_id uuid [not null]
+}
+
+Ref voucher_orders: VoucherOrder.voucher_id > Voucher.voucherId
+Ref order_vouchers: VoucherOrder.order_id > Order.orderId
+
+Table FeeOrder {
+  feeOrderId uuid [primary key]
+  order_id uuid [not null]
+  fee_id uuid [not null]
+}
+Ref order_fees: FeeOrder.order_id > Order.orderId
+Ref fee_orders: FeeOrder.fee_id > Fee.feeId
+
+Table Fee {
+  feeId uuid [primary key]
+  fee_name varchar(50)
+  fee_type varchar(50)
+  fee_amount decimal(8,2) [not null]
+}

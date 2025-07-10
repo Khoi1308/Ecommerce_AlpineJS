@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+* {
+  font-family: "Outfit", sans-serif;
+}
+
 .container {
   width: 90%;
   margin: auto;
