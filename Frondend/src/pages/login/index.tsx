@@ -20,18 +20,25 @@ export const Login = () => {
   } = useMutation({
     mutationFn: login,
     onSuccess: () => {
+      // Navigate to Home page
       navigate("/", {
         replace: true,
       });
     },
   });
+
   return (
     <div className="flex items-center justify-center min-h-screen p-2">
       <div className="bg-slate-900 p-10 rounded-lg shadow-lg text-indigo-300">
         <h2 className="text-center text-white mb-4 text-lg">
           {state === "Sign up" ? "Create Account" : "Login"}
         </h2>
-        <form>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            SignIn({ email, password });
+          }}
+        >
           {isError && (
             <div className="text-red-400 mb-3">Invalid email or password</div>
           )}
@@ -45,6 +52,9 @@ export const Login = () => {
                 onChange={(e) => setUsername(e.target.value)}
                 value={username}
                 placeholder="Username"
+                onKeyDown={(e) =>
+                  e.key === "Enter" && SignIn({ email, password })
+                }
                 required
               />
             </div>
@@ -69,6 +79,8 @@ export const Login = () => {
             <input
               className="bg-transparent outline-none"
               type="password"
+              onChange={(e) => setPassword(e.target.value)}
+              value={password}
               placeholder="Password"
               required
             />
@@ -83,7 +95,7 @@ export const Login = () => {
           <button
             className="mt-4 w-full bg-gradient-to-r from-indigo-500 to-indigo-900 font-medium py-2.5 rounded-full text-white"
             disabled={isPending}
-            onClick={() => SignIn({ email, password })}
+            type="submit"
           >
             {state}
           </button>
