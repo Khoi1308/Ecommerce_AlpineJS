@@ -2,12 +2,30 @@ import { useState } from "react";
 import { MdOutlinePersonalInjury } from "react-icons/md";
 import { BiLogoGmail } from "react-icons/bi";
 import { FaLock } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useMutation } from "@tanstack/react-query";
+import { login } from "../../lib/api";
 
 export const Login = () => {
   const [state, setState] = useState("Login");
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const navigate = useNavigate();
+
+  const {
+    mutate: SignIn,
+    isPending,
+    isError,
+  } = useMutation({
+    mutationFn: login,
+    onSuccess: () => {
+      // Navigate to Home page
+      navigate("/", {
+        replace: true,
+      });
+    },
+  });
 
   return (
     <div className="flex items-center justify-center min-h-screen p-2">
@@ -15,7 +33,15 @@ export const Login = () => {
         <h2 className="text-center text-white mb-4 text-lg">
           {state === "Sign up" ? "Create Account" : "Login"}
         </h2>
-        <form>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            SignIn({ email, password });
+          }}
+        >
+          {isError && (
+            <div className="text-red-400 mb-3">Invalid email or password</div>
+          )}
           {state === "Sign up" && (
             // Username
             <div className="flex items-center gap-3 mb-4 w-full px-5 py-2.5 bg-[#333A5C] rounded-full">
@@ -26,6 +52,9 @@ export const Login = () => {
                 onChange={(e) => setUsername(e.target.value)}
                 value={username}
                 placeholder="Username"
+                onKeyDown={(e) =>
+                  e.key === "Enter" && SignIn({ email, password })
+                }
                 required
               />
             </div>
@@ -50,6 +79,8 @@ export const Login = () => {
             <input
               className="bg-transparent outline-none"
               type="password"
+              onChange={(e) => setPassword(e.target.value)}
+              value={password}
               placeholder="Password"
               required
             />
@@ -61,7 +92,11 @@ export const Login = () => {
             </Link>
           )}
 
-          <button className="mt-4 w-full bg-gradient-to-r from-indigo-500 to-indigo-900 font-medium py-2.5 rounded-full text-white">
+          <button
+            className="mt-4 w-full bg-gradient-to-r from-indigo-500 to-indigo-900 font-medium py-2.5 rounded-full text-white"
+            disabled={isPending}
+            type="submit"
+          >
             {state}
           </button>
         </form>
