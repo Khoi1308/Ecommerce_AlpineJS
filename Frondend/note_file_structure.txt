@@ -2,3 +2,12 @@ Folder contructs:
 - Pages
 - Components
 - Context: Store all the states and functions of application sotat we can easily access the states and function in any component from this context
+
+{isError && (
+  <div className="text-gray-400">
+    The link is either invalid or expired.{" "}
+    <Link to="/auth/register" className="text-blue-500 hover:underline">
+                  Get a new link
+                </Link>
+              </div>
+            )}

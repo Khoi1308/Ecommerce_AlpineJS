@@ -1,0 +1,52 @@
+name: ecommerce-app
+
+services:
+  database:
+    image: postgres:16.9
+    ports:
+      - 5433:5432
+    env_file: ./Backend/.env
+    volumes:
+      - postgres_data:/data/db
+    networks:
+      - ecommerce-app
+
+  api:
+    build:
+      context: ./Backend
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    env_file: ./Backend/.env
+    volumes:
+      - ./Backend:/app
+      - /app/node_modules
+    networks:
+      - ecommerce-app
+    ports:
+      # port local : port container
+      - 3000:3000
+    depends_on:
+      - database
+
+  frondend:
+    build:
+      context: ./Frondend
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    env_file: ./Backend/.env
+    volumes:
+      - ./Frondend:/app
+      - /app/node_modules
+    networks:
+      - ecommerce-app
+    ports:
+      - 5173:5173
+    command: npm run dev -- --host
+    depends_on:
+      - api
+volumes:
+  postgres_data:
+
+networks:
+  ecommerce-app:
+    driver: bridge
