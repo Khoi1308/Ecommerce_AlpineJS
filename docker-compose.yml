@@ -7,7 +7,7 @@ services:
       - 5433:5432
     env_file: ./Backend/.env
     volumes:
-      - postgres_data:/data/db
+      - postgres_data:/var/lib/postgresql/data
     networks:
       - ecommerce-app
 
