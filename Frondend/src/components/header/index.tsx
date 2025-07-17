@@ -4,11 +4,22 @@ import { Button } from "@mui/material";
 import { IoArrowForwardSharp } from "react-icons/io5";
 import { ProfileImage } from "../ProfileImage";
 import { useAuth } from "../../hooks/useAuth";
+import { useMutation } from "@tanstack/react-query";
+import { logout } from "../../lib/api";
+import { queryClient } from "../../config/queryClient";
 
 export const Header = () => {
   const navigate = useNavigate();
   const { user, isLoading } = useAuth();
-  console.log(user.username);
+  const { mutate: Logout } = useMutation({
+    mutationFn: logout,
+    onSettled: () => {
+      queryClient.clear();
+      navigate("/auth/login", {
+        replace: true,
+      });
+    },
+  });
   return (
     <header>
       {/* Top Strip */}
@@ -54,8 +65,20 @@ export const Header = () => {
           {/*Login account*/}
           <div className="">
             {user ? (
-              // <ProfileImage full_name={user.username} />
-              <div></div>
+              <div className="relative group">
+                <ProfileImage full_name={user.username} />
+                <ul className="absolute hidden group-hover:flex flex-col shadow-md z-50 cursor-pointer">
+                  <li className="hover:text-cyan-400 hover:bg-gray-100 px-5 py-2.5">
+                    Profile
+                  </li>
+                  <li
+                    className="hover:text-cyan-400 hover:bg-gray-100 px-5 py-2.5"
+                    onClick={() => Logout()}
+                  >
+                    Logout
+                  </li>
+                </ul>
+              </div>
             ) : (
               <Button
                 // component={Link}

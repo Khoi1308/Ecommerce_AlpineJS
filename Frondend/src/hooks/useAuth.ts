@@ -17,7 +17,9 @@ export const useAuth = (opts = {}) => {
     queryKey: [AUTH],
     queryFn: getUser,
     staleTime: Infinity, // Call user anywhere in app
-    select: (data) => data.data || data,
+    select: (data: any) => {
+      return data.user || data;
+    },
     ...opts,
   });
 

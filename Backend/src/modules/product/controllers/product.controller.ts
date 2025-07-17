@@ -76,6 +76,11 @@ export class ProductController {
     });
   });
 
+  deleteProductHandler = catchErrors(async (req, res) => {
+    const { id } = req.params;
+
+  });
+
   deleteImageHandler = catchErrors(async (req, res) => {
     const { id } = req.params;
 

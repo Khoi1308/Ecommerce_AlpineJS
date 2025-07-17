@@ -14,7 +14,7 @@ import { VerificationCode } from "../../auth/entities/verificationCode.entity";
 import { Session } from "../../auth/entities/session.entity";
 import { Role } from "./role.entity";
 import { Order } from "../../order/entities/order.entity";
-import { Address } from "./address.entity";
+import { Address } from "../../address/entities/address.entity";
 
 @Entity("users")
 export class User {

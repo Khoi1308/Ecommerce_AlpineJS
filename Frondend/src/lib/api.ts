@@ -24,6 +24,14 @@ export const login = async (data: LoginParams) => API.post("/auth/login", data);
 export const register = async (data: RegisterParams) =>
   API.post("/auth/register", data);
 
+export const logout = async () => {
+  try {
+    await API.get("/auth/logout");
+  } catch (error) {
+    console.error("Log out failed: ", error);
+  }
+};
+
 export const verifyEmail = async (verificationCode: string) =>
   API.get(`/auth/email/verify/${verificationCode}`);
 

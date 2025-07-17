@@ -15,18 +15,20 @@ ProductModule.put(
   uploadImages.array("images", 10),
   productController.updateProductHandler,
 );
+// DELETE
+ProductModule.delete("/:id", productController.deleteProductHandler);
 
 // GET product by ID
-ProductModule.delete(
-  "/delete/images/:id",
-  productController.deleteImageHandler,
-);
-
-// Modify images
 ProductModule.get("/:id", productController.getProductById);
 
+// Modify images
 ProductModule.post(
   "/add/images/:id",
   uploadImages.array("images", 10),
   productController.addImageHandler,
+);
+
+ProductModule.delete(
+  "/delete/images/:id",
+  productController.deleteImageHandler,
 );

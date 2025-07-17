@@ -13,8 +13,8 @@ import {
 import { User } from "../../user/entities/user.entity";
 import { Fee } from "./fee.entity";
 import { Voucher } from "./voucher.entity";
-import { Address } from "../../user/entities/address.entity";
 import { Shipping } from "./shipping.entity";
+import { Address } from "../../address/entities/address.entity";
 
 @Entity("orders")
 export class Order {
