@@ -5,7 +5,6 @@ import { authenticate } from "./middlewares/authentication.middleware";
 import { SessionModule } from "./modules/session/session.module";
 import {
   rolesAuthorization,
-  permissionsAuthorization,
 } from "./middlewares/authorization.middleware";
 import { ProductModule } from "./modules/product/product.module";
 
@@ -17,7 +16,7 @@ export class AppModule {
     app.use(
       "/users",
       authenticate,
-      permissionsAuthorization(["create:product"]),
+      rolesAuthorization("customer"),
       UserModule,
     );
     app.use(

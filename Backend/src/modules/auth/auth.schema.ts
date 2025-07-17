@@ -29,7 +29,13 @@ export const registerSchema = baseSchema
 
 export const verificationCodeSchema = z.string().min(1);
 
-export const resetPasswordSchema = z.object({
-  password: passwordSchema,
-  verificationCode: verificationCodeSchema,
-});
+export const resetPasswordSchema = z
+  .object({
+    password: passwordSchema,
+    confirmPassword: z.string().min(6).max(255),
+    verificationCode: verificationCodeSchema,
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Password do not match",
+    path: ["confirmPassword"],
+  });

@@ -123,8 +123,6 @@ export const loginAccount = async ({
   const user = await user_repository.findByEmailOrUsername(username, email);
   appAssert(user, UNAUTHORIZED, "Invalid username or email");
 
-  console.log(user);
-
   // Validate password from the request
   const isValid = await user.comparePassword(password);
   appAssert(isValid, UNAUTHORIZED, "Invalid email or password");

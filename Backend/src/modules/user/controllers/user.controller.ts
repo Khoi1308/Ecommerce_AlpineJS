@@ -6,7 +6,10 @@ import { UserRepository } from "../repositories/user.repository";
 
 const user_repository = new UserRepository();
 export const getUserHandler = catchErrors(async (req, res) => {
-  const user = await user_repository.findOne({ where: { userId: req.userId } });
+  const user = await user_repository.findOne({
+    where: { userId: req.userId },
+    relations: ["role"],
+  });
   appAssert(user, NOT_FOUND, "User not found");
 
   res.status(SUCCESS).json({

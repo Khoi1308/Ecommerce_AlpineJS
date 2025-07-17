@@ -5,7 +5,6 @@ import { Link, useNavigate } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
 import { login } from "../../lib/api";
 export const Login = () => {
-  const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
@@ -27,9 +26,7 @@ export const Login = () => {
   return (
     <div className="flex items-center justify-center min-h-screen p-2">
       <div className="bg-slate-900 p-10 rounded-lg shadow-lg text-indigo-300">
-        <h2 className="text-center text-white mb-4 text-lg">
-          Login
-        </h2>
+        <h2 className="text-center text-white mb-4 text-lg">Login</h2>
         <form
           onSubmit={(e) => {
             e.preventDefault();
@@ -65,6 +62,9 @@ export const Login = () => {
               placeholder="Password"
               required
             />
+          </div>
+          <div className="hover:underline">
+            <Link to="/auth/password/forgot">forgot password?</Link>
           </div>
           <button
             className="mt-4 w-full bg-gradient-to-r from-indigo-500 to-indigo-900 font-medium py-2.5 rounded-full text-white"
