@@ -21,7 +21,7 @@ export class ProductRepository extends Repository<Product> {
     return await this.save(product);
   }
 
-  async findById(productId: string): Promise<Product | null> {
+  async findProductById(productId: string): Promise<Product | null> {
     const product = await this.findOne({
       where: { productId },
     });

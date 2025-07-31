@@ -15,7 +15,7 @@ export const Header = () => {
     mutationFn: logout,
     onSettled: () => {
       queryClient.clear();
-      navigate("/auth/login", {
+      navigate("/", {
         replace: true,
       });
     },
@@ -62,12 +62,13 @@ export const Header = () => {
           <div className="">
             <Search />
           </div>
+
           {/*Login account*/}
           <div className="">
             {user ? (
               <div className="relative group">
                 <ProfileImage full_name={user.username} />
-                <ul className="absolute hidden group-hover:flex flex-col shadow-md z-50 cursor-pointer">
+                <ul className="absolute hidden group-hover:flex flex-col shadow-md z-50 cursor-pointer right-0 bg-white rounded-md">
                   <li className="hover:text-cyan-400 hover:bg-gray-100 px-5 py-2.5">
                     Profile
                   </li>

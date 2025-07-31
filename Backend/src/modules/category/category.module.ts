@@ -6,3 +6,5 @@ export const CategoryModule = Router();
 const category_controller = new CategoryController();
 
 CategoryModule.post("/", category_controller.createCategoryHandler);
+//Get all
+CategoryModule.get("/", category_controller.getAllCategoryHandler);

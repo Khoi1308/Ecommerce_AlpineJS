@@ -3,22 +3,17 @@ import { AuthModule } from "./modules/auth/auth.module";
 import { UserModule } from "./modules/user/user.module";
 import { authenticate } from "./middlewares/authentication.middleware";
 import { SessionModule } from "./modules/session/session.module";
-import {
-  rolesAuthorization,
-} from "./middlewares/authorization.middleware";
+import { rolesAuthorization } from "./middlewares/authorization.middleware";
 import { ProductModule } from "./modules/product/product.module";
+import { AddressModule } from "./modules/address/address.module";
+import { CategoryModule } from "./modules/category/category.module";
 
 export class AppModule {
   static setup(app: express.Application) {
     // auth routes
     app.use("/auth", AuthModule);
     // Protected routes
-    app.use(
-      "/users",
-      authenticate,
-      rolesAuthorization("customer"),
-      UserModule,
-    );
+    app.use("/users", authenticate, rolesAuthorization("admin"), UserModule);
     app.use(
       "/sessions",
       authenticate,
@@ -31,6 +26,14 @@ export class AppModule {
       authenticate,
       rolesAuthorization("admin"),
       ProductModule,
+    );
+
+    app.use("/addresses", authenticate, AddressModule);
+    app.use(
+      "/categories",
+      authenticate,
+      rolesAuthorization("admin"),
+      CategoryModule,
     );
   }
 }

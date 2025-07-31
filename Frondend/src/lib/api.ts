@@ -1,5 +1,13 @@
 import { API } from "../config/apiClient";
 
+// Types for Category API
+interface Category {
+  categoryId: string;
+  category_name: string;
+  category_description?: string | null;
+  createdAt: string;
+}
+
 type LoginParams = {
   email: string;
   username?: string;
@@ -53,4 +61,29 @@ export const getUser = async () => {
   const response = await API.get("/users");
 
   return response;
+};
+
+export const addImage = async (files): Promise<string[]> => {
+  const formData = new FormData();
+
+  files.forEach((file) => {
+    formData.append("images", file);
+  });
+
+  return await API.post("/products/add/images", formData);
+};
+
+export const addProduct = async (productData) => {
+  return await API.post("/products", productData);
+};
+
+export const fetchAllCategories = async (): Promise<Category[]> => {
+  try {
+    const response = await API.get("/categories");
+
+    console.log(response.data);
+    return response.data;
+  } catch (error) {
+    console.error("Fetch Categories Error:", error); // Log the error object
+  }
 };

@@ -5,5 +5,8 @@ export const AddressModule = Router();
 
 const addressController = new AddressController();
 
-// GET: All
 AddressModule.post("/", addressController.createAddressHandler);
+
+AddressModule.get("/:id", addressController.getAddressHandler);
+
+

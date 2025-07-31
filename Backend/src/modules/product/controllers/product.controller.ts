@@ -78,7 +78,6 @@ export class ProductController {
 
   deleteProductHandler = catchErrors(async (req, res) => {
     const { id } = req.params;
-
   });
 
   deleteImageHandler = catchErrors(async (req, res) => {
@@ -95,19 +94,14 @@ export class ProductController {
   });
 
   addImageHandler = catchErrors(async (req, res) => {
-    const { id } = req.params;
-
     const image_files = req.files as Express.Multer.File[];
 
-    const updated_product = await this.productService.addImagesInProduct(
-      id,
-      image_files,
-    );
+    const img_urls = await this.productService.addImages(image_files);
 
     res.status(SUCCESS).json({
       success: true,
       message: "Images are uploaded",
-      data: updated_product,
+      data: img_urls,
     });
   });
 }

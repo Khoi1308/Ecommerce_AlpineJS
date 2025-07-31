@@ -1,3 +1,4 @@
+import { DataSource } from "typeorm";
 import { NOT_FOUND } from "../../../config/http";
 import { appAssert } from "../../../utils/appAssert";
 import {
@@ -16,15 +17,17 @@ export class ProductService {
   private product_repository: ProductRepository;
   private category_repository: CategoryRepository;
   private inventory_repository: InventoryRepository;
+  private dataSource: DataSource;
 
-  constructor() {
+  constructor(dataSource: DataSource) {
+    this.dataSource = dataSource;
     this.product_repository = new ProductRepository();
     this.category_repository = new CategoryRepository();
     this.inventory_repository = new InventoryRepository();
   }
 
   async getProductById(productId: string): Promise<Product> {
-    const product = await this.product_repository.findById(productId);
+    const product = await this.product_repository.findProductById(productId);
     appAssert(product, NOT_FOUND, "Not found product");
 
     return product;
@@ -38,11 +41,16 @@ export class ProductService {
     productData: CreateProductDto,
     userId: string,
   ): Promise<Product> {
-    const category = await this.category_repository.findById(
-      productData.category_id,
-    );
+    const {
+      category_id,
+    } = productData;
+
+    const category = await this.category_repository.findById(category_id);
     appAssert(category, NOT_FOUND, "Category is not found");
 
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
     // Create product
     const new_product = await this.product_repository.createProduct({
       ...productData,
@@ -157,7 +165,8 @@ export class ProductService {
     }
 
     // Get updated product
-    const updatedProduct = await this.product_repository.findById(productId);
+    const updatedProduct =
+      await this.product_repository.findProductById(productId);
     appAssert(updatedProduct, NOT_FOUND, "Not found product");
 
     return {
@@ -169,7 +178,7 @@ export class ProductService {
     productId: string,
     img_url: string[],
   ): Promise<void> {
-    const product = await this.product_repository.findById(productId);
+    const product = await this.product_repository.findProductById(productId);
     appAssert(product, NOT_FOUND, "Product not found");
 
     // Delete images in Product
@@ -186,28 +195,18 @@ export class ProductService {
     }
   }
 
-  async addImagesInProduct(
-    productId: string,
-    img_urls: Express.Multer.File[],
-  ): Promise<void> {
-    const product = await this.product_repository.findById(productId);
-    appAssert(product, NOT_FOUND, "Product not found");
-
-    let new_image_urls: string[] | [];
+  async addImages(img_urls: Express.Multer.File[]): Promise<string[]> {
     if (img_urls && img_urls.length > 0) {
       const file_paths = img_urls.map((file) => file.path);
       try {
-        new_image_urls = await uploadMultipleImages(file_paths);
-        const updated_urls = [...product.img_url, ...new_image_urls];
+        const new_image_urls = await uploadMultipleImages(file_paths);
 
-        // Update urls in database
-        const updated_data: Partial<UpdateProductDto> = {
-          img_url: updated_urls,
-        };
-        await this.product_repository.updateById(productId, updated_data);
+        return new_image_urls;
       } catch (error) {
         throw new Error(`Failed to add images: ${error}`);
       }
+    } else {
+      return [];
     }
   }
 

@@ -23,7 +23,7 @@ ProductModule.get("/:id", productController.getProductById);
 
 // Modify images
 ProductModule.post(
-  "/add/images/:id",
+  "/add/images",
   uploadImages.array("images", 10),
   productController.addImageHandler,
 );

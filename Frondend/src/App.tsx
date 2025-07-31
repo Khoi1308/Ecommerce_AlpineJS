@@ -6,16 +6,13 @@ import { Register } from "./pages/register";
 import { VerifyAccount } from "./pages/verifyAccount";
 import { ForgorPassword } from "./pages/forgotPassword";
 import { ResetPassword } from "./pages/resetPassword";
-import { AppContainer } from "./components/AppContainer";
 
 function App() {
   return (
     <>
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<AppContainer />}>
-            <Route index element={<Home />} />
-          </Route>
+          <Route path="/" element={<Home />} />
           <Route path="/auth/login" element={<Login />} />
           <Route path="/auth/register" element={<Register />} />
           <Route path="/auth/email/verify/:code" element={<VerifyAccount />} />
