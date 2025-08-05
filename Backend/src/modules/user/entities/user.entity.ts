@@ -14,7 +14,8 @@ import { VerificationCode } from "../../auth/entities/verificationCode.entity";
 import { Session } from "../../auth/entities/session.entity";
 import { Role } from "./role.entity";
 import { Order } from "../../order/entities/order.entity";
-import { Address } from "../../address/entities/address.entity";
+import { Avatar } from "./avatar.entity";
+import { UserAddress } from "./userAddress.entity";
 
 @Entity("users")
 export class User {
@@ -45,6 +46,9 @@ export class User {
   )
   verificationCodes!: VerificationCode[];
 
+  @OneToMany(() => Avatar, (avatar) => avatar.user)
+  avatars!: Avatar[];
+
   @OneToMany(() => Session, (session) => session.user)
   sessions!: Session[];
 
@@ -55,8 +59,8 @@ export class User {
   @OneToMany(() => Order, (order) => order.user)
   orders!: Order[];
 
-  @OneToMany(() => Address, (address) => address.user)
-  addresses!: Address[];
+  @OneToMany(() => UserAddress, (address) => address.user)
+  addresses!: UserAddress[];
 
   async comparePassword(value: string): Promise<boolean> {
     return compareValue(value, this.password);

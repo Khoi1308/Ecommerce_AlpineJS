@@ -1,20 +1,13 @@
-import {
-  Column,
-  Entity,
-  JoinColumn,
-  ManyToOne,
-  PrimaryGeneratedColumn,
-} from "typeorm";
-import { User } from "../../user/entities/user.entity";
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { UserAddress } from "../../user/entities/userAddress.entity";
 
 @Entity("addresses")
 export class Address {
   @PrimaryGeneratedColumn("uuid")
   addressId!: string;
 
-  @ManyToOne(() => User, (user) => user.addresses)
-  @JoinColumn({ name: "userId" })
-  user!: User;
+  @OneToMany(() => UserAddress, (user) => user.address)
+  users!: UserAddress[];
 
   @Column()
   street!: string;
@@ -27,7 +20,4 @@ export class Address {
 
   @Column()
   country!: string;
-
-  @Column({ default: false })
-  is_default!: boolean;
 }

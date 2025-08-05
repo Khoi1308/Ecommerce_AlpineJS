@@ -10,3 +10,5 @@
   + MASTER SURL
 - Event sourcing architecture
 - Message queue architecture: 
+
+Dương Minh Anh Khôi

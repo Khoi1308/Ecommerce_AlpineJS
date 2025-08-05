@@ -1,7 +1,7 @@
 import { MigrationInterface, QueryRunner } from "typeorm";
 
-export class UpdateDatabaseSchema1752479930373 implements MigrationInterface {
-    name = 'UpdateDatabaseSchema1752479930373'
+export class ModifyRelationshipUserAddress1754372383305 implements MigrationInterface {
+    name = 'ModifyRelationshipUserAddress1754372383305'
 
     public async up(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.query(`CREATE TYPE "public"."verification_codes_type_enum" AS ENUM('email_verification', 'password_reset')`);
@@ -16,12 +16,14 @@ export class UpdateDatabaseSchema1752479930373 implements MigrationInterface {
         await queryRunner.query(`CREATE TABLE "fees" ("feeId" uuid NOT NULL DEFAULT uuid_generate_v4(), "fee_name" character varying NOT NULL, "fee_type" "public"."fees_fee_type_enum" NOT NULL, "fee_amount" numeric NOT NULL, "is_active" boolean NOT NULL DEFAULT true, CONSTRAINT "PK_91f2c864927aee4fa537e06d1c5" PRIMARY KEY ("feeId"))`);
         await queryRunner.query(`CREATE TYPE "public"."vouchers_voucher_type_enum" AS ENUM('PERCENTAGE', 'FIXED_AMOUNT', 'FREE_SHIPPING')`);
         await queryRunner.query(`CREATE TABLE "vouchers" ("voucherId" uuid NOT NULL DEFAULT uuid_generate_v4(), "voucher_code" character varying NOT NULL, "voucher_type" "public"."vouchers_voucher_type_enum" NOT NULL, "description" character varying NOT NULL, "voucher_value" numeric(10,2) NOT NULL, "min_order_value" numeric(10,2), "max_discount" numeric(10,2), "voucher_limit" integer NOT NULL DEFAULT '1', "voucher_used" integer NOT NULL DEFAULT '0', "is_active" boolean NOT NULL DEFAULT true, CONSTRAINT "UQ_1445a42f62127bf6cde38b4de47" UNIQUE ("voucher_code"), CONSTRAINT "PK_c9fa7aaaaf8bb9c0c80e4ab8545" PRIMARY KEY ("voucherId"))`);
-        await queryRunner.query(`CREATE TABLE "addresses" ("addressId" uuid NOT NULL DEFAULT uuid_generate_v4(), "street" character varying NOT NULL, "city" character varying NOT NULL, "postalCode" character varying NOT NULL, "country" character varying NOT NULL, "is_default" boolean NOT NULL DEFAULT false, "userId" uuid, CONSTRAINT "PK_ff59275f5928941ce06f1d8890c" PRIMARY KEY ("addressId"))`);
         await queryRunner.query(`CREATE TABLE "shipping" ("shippingId" uuid NOT NULL DEFAULT uuid_generate_v4(), "shipping_name" character varying(50) NOT NULL, "shipping_price" numeric(10,2) NOT NULL, CONSTRAINT "PK_7bb53fc029bd38a48d26ffefce5" PRIMARY KEY ("shippingId"))`);
+        await queryRunner.query(`CREATE TABLE "addresses" ("addressId" uuid NOT NULL DEFAULT uuid_generate_v4(), "street" character varying NOT NULL, "city" character varying NOT NULL, "postalCode" character varying NOT NULL, "country" character varying NOT NULL, CONSTRAINT "PK_ff59275f5928941ce06f1d8890c" PRIMARY KEY ("addressId"))`);
         await queryRunner.query(`CREATE TABLE "orders" ("orderId" uuid NOT NULL DEFAULT uuid_generate_v4(), "total_price" numeric NOT NULL, "payment_method" character varying NOT NULL, "status" character varying NOT NULL, "createdAt" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "user_id" uuid, "address_id" uuid, "shipping_id" uuid, CONSTRAINT "PK_41ba27842ac1a2c24817ca59eaa" PRIMARY KEY ("orderId"))`);
         await queryRunner.query(`CREATE TABLE "orders_vouchers" ("orderVoucherId" uuid NOT NULL DEFAULT uuid_generate_v4(), "appliedDiscount" numeric NOT NULL, "orderId" uuid, "voucher_id" uuid, CONSTRAINT "PK_9e8f9f569849da8db5908601508" PRIMARY KEY ("orderVoucherId"))`);
         await queryRunner.query(`CREATE TABLE "order_items" ("orderItemId" uuid NOT NULL DEFAULT uuid_generate_v4(), "unit_price" numeric(10,2) NOT NULL, "total_price" numeric(10,2) NOT NULL, "createdAt" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "orderId" uuid, CONSTRAINT "PK_4e1bb5fea3ad96dcc899be6cc7d" PRIMARY KEY ("orderItemId"))`);
+        await queryRunner.query(`CREATE TABLE "avatars" ("avatarId" uuid NOT NULL DEFAULT uuid_generate_v4(), "is_default" boolean NOT NULL DEFAULT true, "createdAt" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "user_id" uuid, CONSTRAINT "PK_99798d69f65f95fe083845ea5cc" PRIMARY KEY ("avatarId"))`);
         await queryRunner.query(`CREATE TABLE "users" ("userId" uuid NOT NULL DEFAULT uuid_generate_v4(), "username" character varying NOT NULL, "email" character varying NOT NULL, "password" character varying NOT NULL, "verified" boolean NOT NULL DEFAULT false, "createdAt" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "roleId" uuid, CONSTRAINT "UQ_fe0bb3f6520ee0469504521e710" UNIQUE ("username"), CONSTRAINT "UQ_97672ac88f789774dd47f7c8be3" UNIQUE ("email"), CONSTRAINT "PK_8bf09ba754322ab9c22a215c919" PRIMARY KEY ("userId"))`);
+        await queryRunner.query(`CREATE TABLE "users_addresses" ("userAddressId" uuid NOT NULL DEFAULT uuid_generate_v4(), "is_default" boolean NOT NULL DEFAULT false, "createdAt" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "user_id" uuid, "address_id" uuid, CONSTRAINT "PK_8498cbf594faaa64f8e3cca5c9a" PRIMARY KEY ("userAddressId"))`);
         await queryRunner.query(`CREATE TABLE "promotions" ("promotionId" uuid NOT NULL DEFAULT uuid_generate_v4(), "promotion_name" character varying(50) NOT NULL, "promotion_discount" numeric(10,2) NOT NULL DEFAULT '0', "createAt" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "expiresAt" TIMESTAMP WITH TIME ZONE NOT NULL, CONSTRAINT "PK_685072e22d6413c91bc4b92390a" PRIMARY KEY ("promotionId"))`);
         await queryRunner.query(`CREATE TABLE "categories" ("categoryId" uuid NOT NULL DEFAULT uuid_generate_v4(), "category_name" character varying(50) NOT NULL, "category_description" text, "createdAt" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), CONSTRAINT "PK_c9594c262e6781893a1068d91be" PRIMARY KEY ("categoryId"))`);
         await queryRunner.query(`CREATE TABLE "products" ("productId" uuid NOT NULL DEFAULT uuid_generate_v4(), "product_name" character varying NOT NULL, "product_price" numeric(10,2) NOT NULL DEFAULT '0', "img_url" text array DEFAULT '{}', "description" text, "is_active" boolean NOT NULL DEFAULT true, "is_signature" boolean NOT NULL DEFAULT false, "createdAt" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "updatesAt" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "category_id" uuid, CONSTRAINT "PK_7b3b507508cd0f86a5b2e923459" PRIMARY KEY ("productId"))`);
@@ -40,14 +42,16 @@ export class UpdateDatabaseSchema1752479930373 implements MigrationInterface {
         await queryRunner.query(`CREATE INDEX "IDX_bf5b5be4ac6f34e7df70408adc" ON "categories_promotions" ("category_id") `);
         await queryRunner.query(`ALTER TABLE "verification_codes" ADD CONSTRAINT "FK_9a854eeb4598a22d554ecfe6e81" FOREIGN KEY ("userId") REFERENCES "users"("userId") ON DELETE CASCADE ON UPDATE NO ACTION`);
         await queryRunner.query(`ALTER TABLE "sessions" ADD CONSTRAINT "FK_57de40bc620f456c7311aa3a1e6" FOREIGN KEY ("userId") REFERENCES "users"("userId") ON DELETE CASCADE ON UPDATE NO ACTION`);
-        await queryRunner.query(`ALTER TABLE "addresses" ADD CONSTRAINT "FK_95c93a584de49f0b0e13f753630" FOREIGN KEY ("userId") REFERENCES "users"("userId") ON DELETE NO ACTION ON UPDATE NO ACTION`);
         await queryRunner.query(`ALTER TABLE "orders" ADD CONSTRAINT "FK_a922b820eeef29ac1c6800e826a" FOREIGN KEY ("user_id") REFERENCES "users"("userId") ON DELETE NO ACTION ON UPDATE NO ACTION`);
         await queryRunner.query(`ALTER TABLE "orders" ADD CONSTRAINT "FK_d39c53244703b8534307adcd073" FOREIGN KEY ("address_id") REFERENCES "addresses"("addressId") ON DELETE NO ACTION ON UPDATE NO ACTION`);
         await queryRunner.query(`ALTER TABLE "orders" ADD CONSTRAINT "FK_a89d985ed97296e5d5f47c9be26" FOREIGN KEY ("shipping_id") REFERENCES "shipping"("shippingId") ON DELETE NO ACTION ON UPDATE NO ACTION`);
         await queryRunner.query(`ALTER TABLE "orders_vouchers" ADD CONSTRAINT "FK_8dd11f21d717c8bb156f703ee3c" FOREIGN KEY ("orderId") REFERENCES "orders"("orderId") ON DELETE NO ACTION ON UPDATE NO ACTION`);
         await queryRunner.query(`ALTER TABLE "orders_vouchers" ADD CONSTRAINT "FK_e86503f959361448bc92228a194" FOREIGN KEY ("voucher_id") REFERENCES "vouchers"("voucherId") ON DELETE NO ACTION ON UPDATE NO ACTION`);
         await queryRunner.query(`ALTER TABLE "order_items" ADD CONSTRAINT "FK_f1d359a55923bb45b057fbdab0d" FOREIGN KEY ("orderId") REFERENCES "orders"("orderId") ON DELETE NO ACTION ON UPDATE NO ACTION`);
+        await queryRunner.query(`ALTER TABLE "avatars" ADD CONSTRAINT "FK_068bfde144915dbef38bae31808" FOREIGN KEY ("user_id") REFERENCES "users"("userId") ON DELETE NO ACTION ON UPDATE NO ACTION`);
         await queryRunner.query(`ALTER TABLE "users" ADD CONSTRAINT "FK_368e146b785b574f42ae9e53d5e" FOREIGN KEY ("roleId") REFERENCES "roles"("roleId") ON DELETE NO ACTION ON UPDATE NO ACTION`);
+        await queryRunner.query(`ALTER TABLE "users_addresses" ADD CONSTRAINT "FK_a6de63ed9c7d202b9cadae024df" FOREIGN KEY ("user_id") REFERENCES "users"("userId") ON DELETE NO ACTION ON UPDATE NO ACTION`);
+        await queryRunner.query(`ALTER TABLE "users_addresses" ADD CONSTRAINT "FK_74de4f43d79bc7d7cb5c20d7705" FOREIGN KEY ("address_id") REFERENCES "addresses"("addressId") ON DELETE NO ACTION ON UPDATE NO ACTION`);
         await queryRunner.query(`ALTER TABLE "products" ADD CONSTRAINT "FK_9a5f6868c96e0069e699f33e124" FOREIGN KEY ("category_id") REFERENCES "categories"("categoryId") ON DELETE NO ACTION ON UPDATE NO ACTION`);
         await queryRunner.query(`ALTER TABLE "inventories" ADD CONSTRAINT "FK_92fc0c77bab4a656b9619322c62" FOREIGN KEY ("product_id") REFERENCES "products"("productId") ON DELETE NO ACTION ON UPDATE NO ACTION`);
         await queryRunner.query(`ALTER TABLE "order_status_history" ADD CONSTRAINT "FK_689db3835e5550e68d26ca32676" FOREIGN KEY ("orderId") REFERENCES "orders"("orderId") ON DELETE NO ACTION ON UPDATE NO ACTION`);
@@ -73,14 +77,16 @@ export class UpdateDatabaseSchema1752479930373 implements MigrationInterface {
         await queryRunner.query(`ALTER TABLE "order_status_history" DROP CONSTRAINT "FK_689db3835e5550e68d26ca32676"`);
         await queryRunner.query(`ALTER TABLE "inventories" DROP CONSTRAINT "FK_92fc0c77bab4a656b9619322c62"`);
         await queryRunner.query(`ALTER TABLE "products" DROP CONSTRAINT "FK_9a5f6868c96e0069e699f33e124"`);
+        await queryRunner.query(`ALTER TABLE "users_addresses" DROP CONSTRAINT "FK_74de4f43d79bc7d7cb5c20d7705"`);
+        await queryRunner.query(`ALTER TABLE "users_addresses" DROP CONSTRAINT "FK_a6de63ed9c7d202b9cadae024df"`);
         await queryRunner.query(`ALTER TABLE "users" DROP CONSTRAINT "FK_368e146b785b574f42ae9e53d5e"`);
+        await queryRunner.query(`ALTER TABLE "avatars" DROP CONSTRAINT "FK_068bfde144915dbef38bae31808"`);
         await queryRunner.query(`ALTER TABLE "order_items" DROP CONSTRAINT "FK_f1d359a55923bb45b057fbdab0d"`);
         await queryRunner.query(`ALTER TABLE "orders_vouchers" DROP CONSTRAINT "FK_e86503f959361448bc92228a194"`);
         await queryRunner.query(`ALTER TABLE "orders_vouchers" DROP CONSTRAINT "FK_8dd11f21d717c8bb156f703ee3c"`);
         await queryRunner.query(`ALTER TABLE "orders" DROP CONSTRAINT "FK_a89d985ed97296e5d5f47c9be26"`);
         await queryRunner.query(`ALTER TABLE "orders" DROP CONSTRAINT "FK_d39c53244703b8534307adcd073"`);
         await queryRunner.query(`ALTER TABLE "orders" DROP CONSTRAINT "FK_a922b820eeef29ac1c6800e826a"`);
-        await queryRunner.query(`ALTER TABLE "addresses" DROP CONSTRAINT "FK_95c93a584de49f0b0e13f753630"`);
         await queryRunner.query(`ALTER TABLE "sessions" DROP CONSTRAINT "FK_57de40bc620f456c7311aa3a1e6"`);
         await queryRunner.query(`ALTER TABLE "verification_codes" DROP CONSTRAINT "FK_9a854eeb4598a22d554ecfe6e81"`);
         await queryRunner.query(`DROP INDEX "public"."IDX_bf5b5be4ac6f34e7df70408adc"`);
@@ -99,12 +105,14 @@ export class UpdateDatabaseSchema1752479930373 implements MigrationInterface {
         await queryRunner.query(`DROP TABLE "products"`);
         await queryRunner.query(`DROP TABLE "categories"`);
         await queryRunner.query(`DROP TABLE "promotions"`);
+        await queryRunner.query(`DROP TABLE "users_addresses"`);
         await queryRunner.query(`DROP TABLE "users"`);
+        await queryRunner.query(`DROP TABLE "avatars"`);
         await queryRunner.query(`DROP TABLE "order_items"`);
         await queryRunner.query(`DROP TABLE "orders_vouchers"`);
         await queryRunner.query(`DROP TABLE "orders"`);
-        await queryRunner.query(`DROP TABLE "shipping"`);
         await queryRunner.query(`DROP TABLE "addresses"`);
+        await queryRunner.query(`DROP TABLE "shipping"`);
         await queryRunner.query(`DROP TABLE "vouchers"`);
         await queryRunner.query(`DROP TYPE "public"."vouchers_voucher_type_enum"`);
         await queryRunner.query(`DROP TABLE "fees"`);

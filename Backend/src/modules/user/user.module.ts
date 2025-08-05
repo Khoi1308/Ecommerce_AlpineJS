@@ -1,7 +1,10 @@
 import { Router } from "express";
-import { getUserHandler } from "./controllers/user.controller";
+import { UserController } from "./controllers/user.controller";
 
 export const UserModule = Router();
 
+const userController = new UserController();
 // Prefix: /user/
-UserModule.get("/", getUserHandler);
+UserModule.get("/", userController.getUserHandler);
+UserModule.post("/address", userController.createAddressInUserHandler);
+// UserModule.put("/:id", userController.updateUserHandler);

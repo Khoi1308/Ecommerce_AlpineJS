@@ -1,3 +1,4 @@
+import { CreateAddressDto } from "../../address/dtos/createAddress.dto";
 import { User } from "../entities/user.entity";
 
 export interface CreateUserDto {
@@ -7,6 +8,12 @@ export interface CreateUserDto {
   verified: boolean;
   roleId: string;
   createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface UpdateUserDto {
+  email?: string;
+  address?: CreateAddressDto;
   updatedAt: Date;
 }
 

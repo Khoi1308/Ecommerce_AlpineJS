@@ -3,5 +3,11 @@ export interface CreateAddressDto {
   city: string;
   postalCode: string;
   country: string;
-  is_default?: boolean;
+}
+
+export interface UpdateAddressDto {
+  street?: string;
+  city?: string;
+  postalCode?: string;
+  country?: string;
 }

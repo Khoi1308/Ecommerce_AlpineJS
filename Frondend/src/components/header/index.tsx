@@ -20,6 +20,14 @@ export const Header = () => {
       });
     },
   });
+
+  const { mutate: UserProfile } = useMutation({
+    onSettled: () => {
+      navigate("/userProfile", {
+        replace: true,
+      });
+    },
+  });
   return (
     <header>
       {/* Top Strip */}
@@ -69,7 +77,10 @@ export const Header = () => {
               <div className="relative group">
                 <ProfileImage full_name={user.username} />
                 <ul className="absolute hidden group-hover:flex flex-col shadow-md z-50 cursor-pointer right-0 bg-white rounded-md">
-                  <li className="hover:text-cyan-400 hover:bg-gray-100 px-5 py-2.5">
+                  <li
+                    className="hover:text-cyan-400 hover:bg-gray-100 px-5 py-2.5"
+                    onClick={() => UserProfile()}
+                  >
                     Profile
                   </li>
                   <li

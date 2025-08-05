@@ -1,3 +1,4 @@
+import { AppData } from "../../../config/db";
 import { CREATED, SUCCESS } from "../../../config/http";
 import { catchErrors } from "../../../utils/catchErrors";
 import { UpdateProductDto } from "../dtos/update_product.dto";
@@ -7,7 +8,7 @@ export class ProductController {
   private productService: ProductService;
 
   constructor() {
-    this.productService = new ProductService();
+    this.productService = new ProductService(AppData);
   }
 
   // Get All products

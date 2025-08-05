@@ -1,6 +1,7 @@
 /Backend/node_modules
 /Backend/.env
-/Frondend/.env
 /Backend/dist
-
 /Backend/eslint.config.mjs
+
+/Frontend/.env
+/Frondend/node_modules

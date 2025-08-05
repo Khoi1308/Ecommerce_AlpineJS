@@ -13,7 +13,8 @@ export class AppModule {
     // auth routes
     app.use("/auth", AuthModule);
     // Protected routes
-    app.use("/users", authenticate, rolesAuthorization("admin"), UserModule);
+    app.use("/users", authenticate, UserModule);
+    app.use("/addresses", authenticate, AddressModule);
     app.use(
       "/sessions",
       authenticate,
