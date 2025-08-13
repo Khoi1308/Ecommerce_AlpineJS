@@ -10,12 +10,24 @@ const storage = multer.diskStorage({
   // destination: function(req, file, cb) {
   //   cb(null, uploadDir);
   // },
-  filename: function (req, file, cb) {
+  filename: function(req, file, cb) {
     cb(null, `${Date.now()}-${file.originalname}`);
   },
 });
 
-export const upload = multer({ storage: storage });
+export const uploadImage = multer({ storage: storage,
+  fileFilter: (req, file, cb) => {
+    const ext = path.extname(file.originalname);
+
+    if (!ext.match(/\.(jpg|png|jpeg)/)) {
+      return cb(new Error("File's type is not supported") as any, false);
+    }
+    cb(null, true);
+  },
+  limits: {
+    fileSize: 2 * 1024 * 1024,
+  },
+});
 
 export const uploadImages = multer({
   storage: storage,

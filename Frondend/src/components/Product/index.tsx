@@ -1,6 +1,10 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useState, useEffect } from "react";
-import { addImage, addProduct, fetchAllCategories } from "../../lib/api";
+import {
+  addMultipleImage,
+  addProduct,
+  fetchAllCategories,
+} from "../../lib/api";
 
 export const ProductCreationForm = () => {
   const [formData, setFormData] = useState({
@@ -110,7 +114,7 @@ export const ProductCreationForm = () => {
     mutationFn: addProduct,
   });
   const { mutate: AddImage } = useMutation({
-    mutationFn: addImage,
+    mutationFn: addMultipleImage,
     onSuccess: (data) => {
       console.log("Images uploaded successfully:", data);
     },
@@ -157,6 +161,7 @@ export const ProductCreationForm = () => {
       let uploadedImageUrls = [];
       if (selectedImages.length > 0) {
         const { data } = await new Promise((resolve, reject) => {
+          console.log("Image file: ", selectedImages)
           AddImage(selectedImages, {
             onSuccess: (imageResponse) => {
               setLoading(false);
@@ -185,19 +190,19 @@ export const ProductCreationForm = () => {
         img_url: uploadedImageUrls,
         ...(productType.toLowerCase() === "book"
           ? {
-              book_attributes: {
-                book_title: formData.product_name,
-                book_pages: Number(bookAttributes.book_pages),
-                publish_date: bookAttributes.publish_date,
-              },
-            }
+            book_attributes: {
+              book_title: formData.product_name,
+              book_pages: Number(bookAttributes.book_pages),
+              publish_date: bookAttributes.publish_date,
+            },
+          }
           : {
-              clothing_attributes: {
-                clothing_size: clothingAttributes.clothing_size,
-                clothing_color: clothingAttributes.clothing_color,
-                clothing_material: clothingAttributes.clothing_material,
-              },
-            }),
+            clothing_attributes: {
+              clothing_size: clothingAttributes.clothing_size,
+              clothing_color: clothingAttributes.clothing_color,
+              clothing_material: clothingAttributes.clothing_material,
+            },
+          }),
       };
 
       console.log("Product data:", productData);

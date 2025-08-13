@@ -63,7 +63,17 @@ export const getUser = async () => {
   return response;
 };
 
-export const addImage = async (files): Promise<string[]> => {
+export const addImage = async (file): Promise<string> => {
+  const formData = new FormData();
+  console.log("Image file: ", file);
+
+  formData.append("image", file);
+
+  console.log("Add image: ", formData);
+  return await API.post("/users/avatar/image", formData);
+};
+
+export const addMultipleImage = async (files): Promise<string[]> => {
   const formData = new FormData();
 
   files.forEach((file) => {
@@ -81,7 +91,6 @@ export const fetchAllCategories = async (): Promise<Category[]> => {
   try {
     const response = await API.get("/categories");
 
-    console.log(response.data);
     return response.data;
   } catch (error) {
     console.error("Fetch Categories Error:", error); // Log the error object
