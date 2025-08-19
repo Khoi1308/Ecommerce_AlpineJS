@@ -24,11 +24,11 @@ export class Order {
   @Column({ type: "decimal" })
   total_price!: number;
 
-  @Column({ nullable: false })
-  payment_method!: string;
+  @Column({ default: "PENDING" })
+  order_status!: string; // PENDING/CONFIRMED/SHIPPED/COMPLETED/CANCELED
 
-  @Column({ nullable: false })
-  status!: string;
+  @Column({ default: "UNPAID" })
+  payment_status!: string; // UNPAID/PARTIALLY_PAID/PAID/REFUNDED/FAILED
 
   @CreateDateColumn({ type: "timestamp with time zone" })
   createdAt!: Date;

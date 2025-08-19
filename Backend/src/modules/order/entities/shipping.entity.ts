@@ -1,4 +1,4 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity("shipping")
 export class Shipping {
@@ -10,4 +10,7 @@ export class Shipping {
 
   @Column({ type: "decimal", precision: 10, scale: 2, nullable: false })
   shipping_price!: string;
+
+  @CreateDateColumn({ type: "timestamp with time zone" })
+  createdAt!: Date;
 }

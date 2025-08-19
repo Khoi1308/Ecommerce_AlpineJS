@@ -1,7 +1,7 @@
 import { MigrationInterface, QueryRunner } from "typeorm";
 
-export class ModifyRelationshipUserAddress1754372547697 implements MigrationInterface {
-    name = 'ModifyRelationshipUserAddress1754372547697'
+export class AddAvatarColInUser1755591128370 implements MigrationInterface {
+    name = 'AddAvatarColInUser1755591128370'
 
     public async up(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.query(`CREATE TYPE "public"."verification_codes_type_enum" AS ENUM('email_verification', 'password_reset')`);
@@ -21,7 +21,7 @@ export class ModifyRelationshipUserAddress1754372547697 implements MigrationInte
         await queryRunner.query(`CREATE TABLE "orders" ("orderId" uuid NOT NULL DEFAULT uuid_generate_v4(), "total_price" numeric NOT NULL, "payment_method" character varying NOT NULL, "status" character varying NOT NULL, "createdAt" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "user_id" uuid, "address_id" uuid, "shipping_id" uuid, CONSTRAINT "PK_41ba27842ac1a2c24817ca59eaa" PRIMARY KEY ("orderId"))`);
         await queryRunner.query(`CREATE TABLE "orders_vouchers" ("orderVoucherId" uuid NOT NULL DEFAULT uuid_generate_v4(), "appliedDiscount" numeric NOT NULL, "orderId" uuid, "voucher_id" uuid, CONSTRAINT "PK_9e8f9f569849da8db5908601508" PRIMARY KEY ("orderVoucherId"))`);
         await queryRunner.query(`CREATE TABLE "order_items" ("orderItemId" uuid NOT NULL DEFAULT uuid_generate_v4(), "unit_price" numeric(10,2) NOT NULL, "total_price" numeric(10,2) NOT NULL, "createdAt" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "orderId" uuid, CONSTRAINT "PK_4e1bb5fea3ad96dcc899be6cc7d" PRIMARY KEY ("orderItemId"))`);
-        await queryRunner.query(`CREATE TABLE "avatars" ("avatarId" uuid NOT NULL DEFAULT uuid_generate_v4(), "is_default" boolean NOT NULL DEFAULT true, "createdAt" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "user_id" uuid, CONSTRAINT "PK_99798d69f65f95fe083845ea5cc" PRIMARY KEY ("avatarId"))`);
+        await queryRunner.query(`CREATE TABLE "avatars" ("avatarId" uuid NOT NULL DEFAULT uuid_generate_v4(), "img_url" text array DEFAULT '{}', "is_default" boolean NOT NULL DEFAULT true, "createdAt" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "user_id" uuid, CONSTRAINT "PK_99798d69f65f95fe083845ea5cc" PRIMARY KEY ("avatarId"))`);
         await queryRunner.query(`CREATE TABLE "users" ("userId" uuid NOT NULL DEFAULT uuid_generate_v4(), "username" character varying NOT NULL, "email" character varying NOT NULL, "password" character varying NOT NULL, "verified" boolean NOT NULL DEFAULT false, "createdAt" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "roleId" uuid, CONSTRAINT "UQ_fe0bb3f6520ee0469504521e710" UNIQUE ("username"), CONSTRAINT "UQ_97672ac88f789774dd47f7c8be3" UNIQUE ("email"), CONSTRAINT "PK_8bf09ba754322ab9c22a215c919" PRIMARY KEY ("userId"))`);
         await queryRunner.query(`CREATE TABLE "users_addresses" ("userAddressId" uuid NOT NULL DEFAULT uuid_generate_v4(), "is_default" boolean NOT NULL DEFAULT false, "createdAt" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "user_id" uuid, "address_id" uuid, CONSTRAINT "PK_8498cbf594faaa64f8e3cca5c9a" PRIMARY KEY ("userAddressId"))`);
         await queryRunner.query(`CREATE TABLE "promotions" ("promotionId" uuid NOT NULL DEFAULT uuid_generate_v4(), "promotion_name" character varying(50) NOT NULL, "promotion_discount" numeric(10,2) NOT NULL DEFAULT '0', "createAt" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(), "expiresAt" TIMESTAMP WITH TIME ZONE NOT NULL, CONSTRAINT "PK_685072e22d6413c91bc4b92390a" PRIMARY KEY ("promotionId"))`);

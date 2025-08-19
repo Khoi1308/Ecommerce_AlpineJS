@@ -16,6 +16,7 @@ import { Role } from "./role.entity";
 import { Order } from "../../order/entities/order.entity";
 import { Avatar } from "./avatar.entity";
 import { UserAddress } from "./userAddress.entity";
+import { Cart } from "../../cart/entities/cart.entity";
 
 @Entity("users")
 export class User {
@@ -58,6 +59,9 @@ export class User {
 
   @OneToMany(() => Order, (order) => order.user)
   orders!: Order[];
+
+  @OneToMany(() => Cart, (cart) => cart.user)
+  carts!: Cart[];
 
   @OneToMany(() => UserAddress, (address) => address.user)
   addresses!: UserAddress[];
