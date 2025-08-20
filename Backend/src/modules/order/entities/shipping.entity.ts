@@ -9,7 +9,7 @@ export class Shipping {
   shipping_name!: string;
 
   @Column({ type: "decimal", precision: 10, scale: 2, nullable: false })
-  shipping_price!: string;
+  shipping_price!: number;
 
   @CreateDateColumn({ type: "timestamp with time zone" })
   createdAt!: Date;

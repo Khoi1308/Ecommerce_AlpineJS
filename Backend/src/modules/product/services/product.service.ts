@@ -174,6 +174,7 @@ export class ProductService {
       hasChange,
     };
   }
+
   async deleteImagesInProduct(
     productId: string,
     img_url: string[],

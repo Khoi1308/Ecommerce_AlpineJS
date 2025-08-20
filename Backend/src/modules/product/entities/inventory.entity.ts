@@ -4,9 +4,11 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from "typeorm";
 import { Product } from "./product.entity";
+import { CartItem } from "../../cart/entities/cartItem.entity";
 
 @Entity("inventories")
 export class Inventory {
@@ -18,6 +20,9 @@ export class Inventory {
 
   @Column({ type: "int", default: 0 })
   available_stock!: number;
+
+  @Column({ type: "decimal", precision: 10, scale: 2, default: 0 })
+  product_price!: number;
 
   // Residual of stock
   @Column({ type: "int", default: 0 })
@@ -39,4 +44,7 @@ export class Inventory {
   @ManyToOne(() => Product) // Product - Inventory
   @JoinColumn({ name: "product_id" })
   product!: Product;
+
+  @OneToMany(() => CartItem, (item) => item.inventory)
+  cart_items!: CartItem[];
 }
