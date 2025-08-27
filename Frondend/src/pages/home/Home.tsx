@@ -1,9 +1,11 @@
+import { Navbar } from "../../components/navigator";
 import ProductCreationForm from "../../components/Product";
 
 export const Home = () => {
   return (
     <div>
-      <NaN /> Home page <ProductCreationForm />
+      <Navbar />
     </div>
   );
 };
+

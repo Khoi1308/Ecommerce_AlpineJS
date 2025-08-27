@@ -16,7 +16,7 @@ export const ProfileImage = ({ full_name }: ProfileImage) => {
 
   return (
     <div
-      className="flex items-center justify-center rounded-full w-[44px] h-[44px] font-[20px] font-bold shadow-lg"
+      className="flex items-center justify-center rounded-full w-[80px] h-[80px] font-[20px] font-bold shadow-lg"
       style={{ backgroundColor }}
     >
       {initials}

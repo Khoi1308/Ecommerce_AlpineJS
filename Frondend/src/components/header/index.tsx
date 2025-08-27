@@ -1,111 +1,102 @@
-import { Link, useNavigate } from "react-router-dom";
-import { Search } from "../search";
-import { Button } from "@mui/material";
-import { IoArrowForwardSharp } from "react-icons/io5";
-import { ProfileImage } from "../ProfileImage";
+import { createContext, useState } from "react";
 import { useAuth } from "../../hooks/useAuth";
+import { useNavigatePage } from "../../hooks/useNavigation";
 import { useMutation } from "@tanstack/react-query";
 import { logout } from "../../lib/api";
 import { queryClient } from "../../config/queryClient";
+import { ProfileImage } from "../ProfileImage";
 
+export const Accounnt = createContext(false);
 export const Header = () => {
-  const navigate = useNavigate();
   const { user, isLoading } = useAuth();
+  const { gotoUserProfile, gotoHomePage, gotoLoginPage } = useNavigatePage();
+  const [open, setOpen] = useState(false);
   const { mutate: Logout } = useMutation({
     mutationFn: logout,
     onSettled: () => {
       queryClient.clear();
-      navigate("/", {
-        replace: true,
-      });
+      gotoHomePage();
     },
   });
 
-  const { mutate: UserProfile } = useMutation({
-    onSettled: () => {
-      navigate("/userProfile", {
-        replace: true,
-      });
-    },
-  });
   return (
-    <header>
-      {/* Top Strip */}
-      <div className="top-strip py-2 border-t-[1px] border-gray-250 border-b-[1px]">
-        <div className="container">
-          <div className="flex items-center justify-between">
-            <div className="col1 w-[50%]">
-              <p className="text-[14px]">Hello</p>
+    <div className="bg-gradient-to-r from-slate-900 to-gray-500 flex justify-between items-center px-1">
+      <div className="text-white text-md font-bold pl-2">Made in DMAK</div>
+      <div className="flex items-center">
+        <div
+          className="relative"
+          onMouseEnter={() => setOpen(true)}
+          onMouseLeave={() => setOpen(false)}
+        >
+          <div className="flex items-center">
+            <div className="text-white cursor-pointer">
+              {user ? `Hello, ${user.username}` : "Hello, account"}{" "}
             </div>
 
-            <div className="col2 flex items-center justify-end">
-              <ul className="flex items-center gap-2">
-                <li className="">
-                  <Link
-                    to="help-center"
-                    className="hover:text-cyan-600 transition"
-                  >
-                    Help Center
-                  </Link>
-                </li>
-                <li className="">
-                  <Link
-                    to="order-tracking"
-                    className="hover:text-cyan-600 transition"
-                  >
-                    Order Tracking
-                  </Link>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Navigator */}
-      <div className="header py-3">
-        <div className="container flex items-center justify-between">
-          <div className="">{/*Image log*/}</div>
-          {/*Search box*/}
-          <div className="">
-            <Search />
-          </div>
-
-          {/*Login account*/}
-          <div className="">
-            {user ? (
-              <div className="relative group">
-                <ProfileImage full_name={user.username} />
-                <ul className="absolute hidden group-hover:flex flex-col shadow-md z-50 cursor-pointer right-0 bg-white rounded-md">
-                  <li
-                    className="hover:text-cyan-400 hover:bg-gray-100 px-5 py-2.5"
-                    onClick={() => UserProfile()}
-                  >
-                    Profile
-                  </li>
-                  <li
-                    className="hover:text-cyan-400 hover:bg-gray-100 px-5 py-2.5"
-                    onClick={() => Logout()}
-                  >
-                    Logout
-                  </li>
-                </ul>
-              </div>
-            ) : (
-              <Button
-                // component={Link}
-                // to="/login"
-                onClick={() => navigate("/auth/login")}
-                variant="outlined" //
-                className="!border-gray-500 !rounded-full hover:bg-gray-100 gap-2 !text-gray-800 shadow-lg"
+            <div>
+              <svg
+                onClick={() => setOpen((prev) => !prev)}
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+                stroke="currentColor"
+                className="size-6 stroke-white m-1"
               >
-                Login
-                <IoArrowForwardSharp></IoArrowForwardSharp>
-              </Button>
-            )}
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="m19.5 8.25-7.5 7.5-7.5-7.5"
+                />
+              </svg>
+            </div>
           </div>
+          {open && (
+            <div className="absolute right-0 z-50 bg-white shadow-md rounded-lg">
+              {user ? (
+                <div className="flex flex-col items-center">
+                  <div className="p-4">
+                    <ProfileImage full_name={user?.username} />
+                  </div>
+
+                  <ul className="w-44 text-black p-2 rounded-md flex flex-col">
+                    <li
+                      className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                      onClick={() => {
+                        gotoUserProfile();
+                        setOpen(false);
+                      }}
+                    >
+                      Profile
+                    </li>
+                    <li
+                      className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                      onClick={() => {
+                        Logout();
+                        setOpen(false);
+                      }}
+                    >
+                      Logout
+                    </li>
+                  </ul>
+                </div>
+              ) : (
+                <div className="w-32 text-black p-3 rounded-md text-center">
+                  <div
+                    className="text-sm font-medium cursor-pointer hover:bg-gray-100 py-1 rounded"
+                    onClick={() => {
+                      gotoLoginPage();
+                      setOpen(false);
+                    }}
+                  >
+                    Login
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
         </div>
       </div>
-    </header>
+    </div>
   );
 };

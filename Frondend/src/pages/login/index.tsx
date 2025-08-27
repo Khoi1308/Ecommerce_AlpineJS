@@ -4,6 +4,8 @@ import { FaLock } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
 import { login } from "../../lib/api";
+import { queryClient } from "../../config/queryClient";
+import { AUTH } from "../../hooks/useAuth";
 export const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");

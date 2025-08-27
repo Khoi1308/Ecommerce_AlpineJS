@@ -1,24 +1,58 @@
+import { Search } from "../search";
+import { useAuth } from "../../hooks/useAuth";
+import { useNavigatePage } from "../../hooks/useNavigation";
 import { useState } from "react";
-import "./index.css";
+import { CatalogButton } from "../Buttons/catalogButton";
+import { FaCartArrowDown, FaPhone, FaTruck } from "react-icons/fa";
 
-export const Navbar = (props: any) => {
-  return (
-    <nav className="navbar">
-      <ul className="navbar-nav"> {props.children}</ul>
-    </nav>
-  );
-};
-
-export const NavItem = (props: any) => {
-  const [open, setOpen] = useState(false);
+export const Navbar = () => {
+  const { user, isLoading } = useAuth();
+  const { open, setOpen } = useState(false);
+  const { gotoHomePage } = useNavigatePage();
 
   return (
-    <li className="nav-item">
-      <a href="#" className="icon-button" onClick={() => setOpen(!open)}>
-        {props.icon}
-      </a>
+    <>
+      {/* Navigator */}
+      <div className="header py-3">
+        <div className="container flex items-center justify-between">
+          <div className="flex items-center gap-20">
+            <div
+              className="font-oswald font-bold uppercase cursor-pointer"
+              onClick={() => gotoHomePage()}
+            >
+              DmakCTN
+            </div>
+            <CatalogButton default_open={open} onToggle={setOpen} />
+          </div>
 
-      {open && props.children}
-    </li>
+          {/*Search box*/}
+          <div className="">
+            <Search />
+          </div>
+
+          {/**/}
+          <div className="flex items-center justify-between gap-4">
+            <div className="flex items-center gap-2 hover:bg-gray-100 rounded-lg p-2">
+              <span>
+                <FaTruck className="text-2xl"></FaTruck>
+              </span>
+              <span>Payment and Delivery</span>
+            </div>
+            <div className="flex items-center gap-2 hover:bg-gray-100 rounded-lg p-2">
+              <span>
+                <FaPhone className="text-xl"></FaPhone>
+              </span>
+              <span>Phone number</span>
+            </div>
+            <div className="flex items-center gap-2 hover:bg-gray-100 rounded-lg p-2">
+              <span>
+                <FaCartArrowDown className="text-2xl"></FaCartArrowDown>
+              </span>
+              <span>Cart</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </>
   );
 };

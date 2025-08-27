@@ -63,7 +63,7 @@ export const getUser = async () => {
   return response;
 };
 
-export const addImage = async (file): Promise<string> => {
+export const addImage = async (file: any): Promise<string> => {
   const formData = new FormData();
   console.log("Image file: ", file);
 
@@ -73,10 +73,10 @@ export const addImage = async (file): Promise<string> => {
   return await API.post("/users/avatar/image", formData);
 };
 
-export const addMultipleImage = async (files): Promise<string[]> => {
+export const addMultipleImage = async (files: any): Promise<string[]> => {
   const formData = new FormData();
 
-  files.forEach((file) => {
+  files.forEach((file: any) => {
     formData.append("images", file);
   });
 

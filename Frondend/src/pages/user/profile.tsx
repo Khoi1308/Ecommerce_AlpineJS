@@ -1,14 +1,16 @@
 import { FileUpload } from "../../components/FileUpload";
 import { Header } from "../../components/header";
+import { Navbar } from "../../components/navigator";
 import { useAuth } from "../../hooks/useAuth";
 
 export const UserProfile = () => {
   const { user, isLoading } = useAuth();
   console.log("User", user.username);
   return (
-    <div>
-      <Header />
+    <>
+      <Navbar/>
       <FileUpload />
-    </div>
+    </>
   );
 };
+
