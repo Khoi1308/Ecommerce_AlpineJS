@@ -7,6 +7,7 @@ import { rolesAuthorization } from "./middlewares/authorization.middleware";
 import { ProductModule } from "./modules/product/product.module";
 import { AddressModule } from "./modules/address/address.module";
 import { CategoryModule } from "./modules/category/category.module";
+import { BannerModule } from "./modules/banner/banner.module";
 
 export class AppModule {
   static setup(app: express.Application) {
@@ -36,5 +37,7 @@ export class AppModule {
       rolesAuthorization("admin"),
       CategoryModule,
     );
+
+    app.use("/banners", BannerModule);
   }
 }

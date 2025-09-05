@@ -1,5 +1,6 @@
 export interface CreateBookAttributesDto {
   book_title: string;
+  book_author: string;
   total_pages?: number;
   publish_date: Date;
   product_id: string;

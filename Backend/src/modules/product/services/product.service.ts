@@ -38,12 +38,10 @@ export class ProductService {
   }
 
   async createProduct(
-    productData: CreateProductDto,
-    userId: string,
+    user_id: string,
+    product_data: CreateProductDto,
   ): Promise<Product> {
-    const {
-      category_id,
-    } = productData;
+    const { category_id } = product_data;
 
     const category = await this.category_repository.findById(category_id);
     appAssert(category, NOT_FOUND, "Category is not found");
@@ -51,62 +49,93 @@ export class ProductService {
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();
-    // Create product
-    const new_product = await this.product_repository.createProduct({
-      ...productData,
-    });
 
-    let product_sku = "";
-    switch (category.category_name) {
-      case "Book": {
-        appAssert(
-          productData.book_attributes,
-          NOT_FOUND,
-          "Book's attribute must be required",
-        );
+    try {
+      // Create product
+      const saved_product = await this.product_repository.createProduct(
+        product_data,
+        queryRunner,
+      );
 
-        const book = await this.category_repository.createBookAttributes({
-          ...productData.book_attributes,
-          product: new_product,
-        });
-        product_sku = `${book.product.product_name}-${book.book_title}-${book.publish_date}`;
-        break;
+      // Create category repository with transaction
+      const category_transaction_repo =
+        this.category_repository.withTransaction(queryRunner.manager);
+
+      let product_sku = "";
+      console.log("Category: ", category);
+
+      // Create attribute
+      switch (category.category_name) {
+        case "Book": {
+          appAssert(
+            product_data.book_attributes,
+            NOT_FOUND,
+            "Book's attribute must be required",
+          );
+
+          const book = await category_transaction_repo.createBookAttributes(
+            {
+              ...product_data.book_attributes,
+              product: saved_product,
+            },
+            queryRunner,
+          );
+
+          product_sku = `${book.product.product_name}-${book.book_title}-${book.publish_date}`;
+          break;
+        }
+
+        case "Clothing": {
+          appAssert(
+            product_data.clothing_attributes,
+            NOT_FOUND,
+            "Clothing's attribute must be required",
+          );
+
+          const clothing =
+            await category_transaction_repo.createClothingAttributes(
+              {
+                ...product_data.clothing_attributes,
+                product: saved_product,
+              },
+              queryRunner,
+            );
+          product_sku = `${clothing.product.product_name}-${clothing.clothing_size}-${clothing.clothing_color}-${clothing.clothing_material}`;
+          break;
+        }
+
+        default:
+          appAssert(
+            product_data.book_attributes || product_data.clothing_attributes,
+            NOT_FOUND,
+            "Attribute must be required",
+          );
+          break;
       }
 
-      case "Clothing": {
-        appAssert(
-          productData.clothing_attributes,
-          NOT_FOUND,
-          "Clothing's attribute must be required",
+      // Create inventory
+      if (product_data.inventory.quantity_on_stock !== undefined) {
+        await this.inventory_repository.createInventory(
+          {
+            product: saved_product,
+            ...product_data.inventory,
+            product_price: product_data.product_price,
+            createdBy: user_id,
+            sku: product_sku,
+          },
+          queryRunner,
         );
-        const clothing =
-          await this.category_repository.createClothingAttributes({
-            ...productData.clothing_attributes,
-            product: new_product,
-          });
-        product_sku = `${clothing.product.product_name}-${clothing.clothing_size}-${clothing.clothing_color}-${clothing.clothing_material}`;
-        break;
       }
-      default:
-        appAssert(
-          productData.book_attributes && productData.clothing_attributes,
-          NOT_FOUND,
-          "Attribute must be required",
-        );
-        break;
-    }
 
-    // Create invenroty record
-    if (productData.inventory.quantity_on_stock !== undefined) {
-      await this.inventory_repository.createInventory({
-        product: new_product,
-        ...productData.inventory,
-        createdBy: userId,
-        sku: product_sku,
-      });
-    }
+      await queryRunner.commitTransaction();
 
-    return new_product;
+      return saved_product;
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+      throw new Error(`Error: ${error}`);
+    } finally {
+      await queryRunner.release();
+    }
   }
 
   async updateProduct(

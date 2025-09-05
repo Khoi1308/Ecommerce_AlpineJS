@@ -7,13 +7,13 @@ import { FaCartArrowDown, FaPhone, FaTruck } from "react-icons/fa";
 
 export const Navbar = () => {
   const { user, isLoading } = useAuth();
-  const { open, setOpen } = useState(false);
+  const [open, setOpen] = useState(false);
   const { gotoHomePage } = useNavigatePage();
 
   return (
     <>
       {/* Navigator */}
-      <div className="header py-3">
+      <div className="py-3 shadow-md">
         <div className="container flex items-center justify-between">
           <div className="flex items-center gap-20">
             <div

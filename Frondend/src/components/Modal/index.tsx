@@ -113,6 +113,7 @@ export const ProductCreationForm = () => {
   const { mutate: AddProduct } = useMutation({
     mutationFn: addProduct,
   });
+
   const { mutate: AddImage } = useMutation({
     mutationFn: addMultipleImage,
     onSuccess: (data) => {
@@ -125,7 +126,7 @@ export const ProductCreationForm = () => {
     },
   });
 
-  const handleImageSelect = (e) => {
+  const handleImageSelect = (e: any) => {
     const files = Array.from(e.target.files);
     if (selectedImages.length + files.length > 10) {
       setError("Just upload maximum 10 images");

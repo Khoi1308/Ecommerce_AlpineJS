@@ -28,36 +28,36 @@ export class CategoryService {
     return await this.category_repository.createCategory(data);
   }
 
-  async createBookProduct(
-    create_data: CreateBookAttributesDto,
-  ): Promise<BookAttribute> {
-    const product = await this.product_repository.findProductById(
-      create_data.product_id,
-    );
-    appAssert(product, NOT_FOUND, "not found product");
-
-    const book_product = await this.category_repository.createBookAttributes({
-      ...create_data,
-      product,
-    });
-
-    return book_product;
-  }
-
-  async createClothingProduct(
-    create_data: CreateClothingAttributesDto,
-  ): Promise<ClothingAttribute> {
-    const product = await this.product_repository.findProductById(
-      create_data.product_id,
-    );
-    appAssert(product, NOT_FOUND, "not found product");
-
-    const clothing_product =
-      await this.category_repository.createClothingAttributes({
-        ...create_data,
-        product,
-      });
-
-    return clothing_product;
-  }
+  // async createBookProduct(
+  //   create_data: CreateBookAttributesDto,
+  // ): Promise<BookAttribute> {
+  //   const product = await this.product_repository.findProductById(
+  //     create_data.product_id,
+  //   );
+  //   appAssert(product, NOT_FOUND, "not found product");
+  //
+  //   const book_product = await this.category_repository.createBookAttributes({
+  //     ...create_data,
+  //     product,
+  //   });
+  //
+  //   return book_product;
+  // }
+  //
+  // async createClothingProduct(
+  //   create_data: CreateClothingAttributesDto,
+  // ): Promise<ClothingAttribute> {
+  //   const product = await this.product_repository.findProductById(
+  //     create_data.product_id,
+  //   );
+  //   appAssert(product, NOT_FOUND, "not found product");
+  //
+  //   const clothing_product =
+  //     await this.category_repository.createClothingAttributes({
+  //       ...create_data,
+  //       product,
+  //     });
+  //
+  //   return clothing_product;
+  // }
 }

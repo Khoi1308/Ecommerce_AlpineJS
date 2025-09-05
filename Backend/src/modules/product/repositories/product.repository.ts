@@ -1,4 +1,4 @@
-import { DeepPartial, Repository } from "typeorm";
+import { QueryRunner, Repository } from "typeorm";
 import { Product } from "../entities/product.entity";
 import { AppData } from "../../../config/db";
 import { CreateProductDto } from "../dtos/create_product.dto";
@@ -15,10 +15,13 @@ export class ProductRepository extends Repository<Product> {
     });
   }
 
-  async createProduct(productData: CreateProductDto): Promise<Product> {
-    const product = this.create(productData as DeepPartial<Product>);
+  async createProduct(
+    productData: CreateProductDto,
+    queryRunner: QueryRunner,
+  ): Promise<Product> {
+    const product = queryRunner.manager.create(Product, productData);
 
-    return await this.save(product);
+    return await queryRunner.manager.save(product);
   }
 
   async findProductById(productId: string): Promise<Product | null> {

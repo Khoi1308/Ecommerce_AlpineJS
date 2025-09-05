@@ -9,6 +9,7 @@ import { ResetPassword } from "./pages/resetPassword";
 import { UserProfile } from "./pages/user/profile";
 import { ProductCard } from "./pages/product/product_card";
 import { Header } from "./components/header";
+import { Contact } from "./pages/contact";
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
       <BrowserRouter>
         <Header />
         <Routes>
+          <Route path="/contacts" element={<Contact />} />
           <Route path="/" element={<Home />} />
           <Route path="/userProfile" element={<UserProfile />} />
           <Route path="/auth/login" element={<Login />} />

@@ -13,6 +13,9 @@ export class BookAttribute {
   bookId!: string;
 
   @Column({ type: "varchar", length: 255 })
+  book_author!: string;
+
+  @Column({ type: "varchar", length: 255 })
   book_title!: string;
 
   @Column({ type: "int", default: 0 })

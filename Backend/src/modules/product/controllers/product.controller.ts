@@ -1,5 +1,6 @@
 import { AppData } from "../../../config/db";
 import { CREATED, SUCCESS } from "../../../config/http";
+import { appAssert } from "../../../utils/appAssert";
 import { catchErrors } from "../../../utils/catchErrors";
 import { UpdateProductDto } from "../dtos/update_product.dto";
 import { ProductService } from "../services/product.service";
@@ -34,9 +35,10 @@ export class ProductController {
   createProductHandler = catchErrors(async (req, res) => {
     const userId = req.userId;
     const productData = req.body;
+
     const new_product = await this.productService.createProduct(
-      productData,
       userId,
+      productData,
     );
 
     res.status(CREATED).json({

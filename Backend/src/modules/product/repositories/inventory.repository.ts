@@ -1,4 +1,4 @@
-import { Repository } from "typeorm";
+import { QueryRunner, Repository } from "typeorm";
 import { Inventory } from "../entities/inventory.entity";
 import { AppData } from "../../../config/db";
 import { CreateInventoryDto } from "../dtos/createInventory.entity";
@@ -23,13 +23,13 @@ export class InventoryRepository extends Repository<Inventory> {
 
   async createInventory(
     data: CreateInventoryDto & { product: Product },
+    queryRunner: QueryRunner,
   ): Promise<Inventory> {
-    const inventory = this.create({
+    const inventory = queryRunner.manager.create(Inventory, {
       ...data,
       available_stock: data.quantity_on_stock,
-      reserved_stock: 0,
     });
 
-    return this.save(inventory);
+    return await queryRunner.manager.save(inventory);
   }
 }

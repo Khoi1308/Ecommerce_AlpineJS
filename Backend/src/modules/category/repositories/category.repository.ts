@@ -1,4 +1,4 @@
-import { EntityManager, Repository } from "typeorm";
+import { EntityManager, QueryRunner, Repository } from "typeorm";
 import { Category } from "../entities/category.entity";
 import { AppData } from "../../../config/db";
 import { appAssert } from "../../../utils/appAssert";
@@ -57,18 +57,26 @@ export class CategoryRepository {
   }
 
   async createBookAttributes(
-    data: CreateBookAttributesDto & { product: Product },
+    book_data: CreateBookAttributesDto & { product: Product },
+    queryRunner: QueryRunner,
   ): Promise<BookAttribute> {
-    data.book_title = data.product.product_name;
-    const book = this.book_repository.create(data);
+    book_data.book_title = book_data.product.product_name;
+    book_data.product_id = book_data.product.productId;
 
-    return this.book_repository.save(book);
+    const book = queryRunner.manager.create(BookAttribute, book_data);
+
+    return queryRunner.manager.save(book);
   }
 
   async createClothingAttributes(
-    data: CreateClothingAttributesDto & { product: Product },
+    clothing_data: CreateClothingAttributesDto & { product: Product },
+    queryRunner: QueryRunner,
   ): Promise<ClothingAttribute> {
-    const clothing = this.clothing_repository.create(data);
+    clothing_data.product_id = clothing_data.product.productId;
+    const clothing = queryRunner.manager.create(
+      ClothingAttribute,
+      clothing_data,
+    );
 
     return this.clothing_repository.save(clothing);
   }
