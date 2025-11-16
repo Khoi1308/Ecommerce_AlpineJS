@@ -9,6 +9,7 @@ import {
 } from "typeorm";
 import { Product } from "./product.entity";
 import { CartItem } from "../../cart/entities/cartItem.entity";
+import { OrderItem } from "../../order/entities/order.entity";
 
 @Entity("inventories")
 export class Inventory {
@@ -21,12 +22,21 @@ export class Inventory {
   @Column({ type: "int", default: 0 })
   available_stock!: number;
 
-  @Column({ type: "decimal", precision: 10, scale: 2, default: 0 })
-  product_price!: number;
+  @Column({ type: "decimal", precision: 10, scale: 2, default: 0 }) // Internal -- don't show for customer
+  cost_price!: number;
+
+  @Column({ type: "decimal", precision: 10, scale: 2, default: 0 }) // price after discount
+  selling_price!: number;
+
+  @Column({ type: "decimal", precision: 10, scale: 2, default: 0 }) // = Product.product_price, can override
+  referrence_price!: number;
 
   // Residual of stock
   @Column({ type: "int", default: 0 })
   reserved_stock!: number;
+
+  @Column({ type: "bigint", default: 1 })
+  version!: number;
 
   @Column({ type: "varchar", length: 50 })
   sku!: string;
@@ -47,4 +57,7 @@ export class Inventory {
 
   @OneToMany(() => CartItem, (item) => item.inventory)
   cart_items!: CartItem[];
+
+  @OneToMany(() => OrderItem, (item) => item.inventory)
+  orderItems!: OrderItem[];
 }

@@ -12,7 +12,7 @@ export class BookAttribute {
   @PrimaryGeneratedColumn("uuid")
   bookId!: string;
 
-  @Column({ type: "varchar", length: 255 })
+  @Column({ type: "varchar", length: 255, nullable: false })
   book_author!: string;
 
   @Column({ type: "varchar", length: 255 })

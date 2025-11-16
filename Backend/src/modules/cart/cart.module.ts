@@ -5,6 +5,7 @@ export const CartModule = Router();
 
 const cart_controller = new CartController();
 
-CartModule.get("/", cart_controller.getAllCartItemHandler)
+CartModule.get("/", cart_controller.getAllCartItemHandler);
 CartModule.post("/", cart_controller.createCartHanlder);
-CartModule.post("/items", cart_controller.createCartItemHandler)
+CartModule.post("/items", cart_controller.createCartItemHandler);
+CartModule.patch("/item/:id/select", cart_controller.updateCartItemHandler);

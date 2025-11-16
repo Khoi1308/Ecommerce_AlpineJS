@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import DropdownButton from "../Buttons/dropdown";
 import { DropdownContent } from "../TextField/dropdownContent";
 import "./index.css";
@@ -17,6 +17,7 @@ export default function Dropdown({ button_context, content }) {
     queryFn: fetchAllCategories,
     staleTime: Infinity,
   });
+
   return (
     <div className="relative">
       <DropdownButton open={open} toggle={handleToggle}>

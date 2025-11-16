@@ -16,7 +16,10 @@ export const AppData = new DataSource({
   username: POSTGRES_USER,
   database: POSTGRES_DB,
   password: POSTGRES_PASSWORD,
-  entities: [path.join(__dirname, "../modules/**/entities/*entity.{ts, js}")],
+  entities: [
+    path.join(__dirname, "../modules/**/entities/*entity.{ts, js}"),
+    path.join(__dirname, "../modules/**/*.entity.{ts, js}"),
+  ],
   // synchronize: true,
   logging: NODE_ENV === "development",
   migrations: [path.join(__dirname, "../../migrations/*.{ts,js}")],

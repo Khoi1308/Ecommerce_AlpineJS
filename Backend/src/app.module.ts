@@ -8,6 +8,8 @@ import { ProductModule } from "./modules/product/product.module";
 import { AddressModule } from "./modules/address/address.module";
 import { CategoryModule } from "./modules/category/category.module";
 import { BannerModule } from "./modules/banner/banner.module";
+import { CartModule } from "./modules/cart/cart.module";
+import { ShippingModule } from "./modules/shipping/shipping.module";
 
 export class AppModule {
   static setup(app: express.Application) {
@@ -39,5 +41,7 @@ export class AppModule {
     );
 
     app.use("/banners", BannerModule);
+    app.use("/carts", authenticate, CartModule);
+    app.use("/shippings/", authenticate, ShippingModule);
   }
 }

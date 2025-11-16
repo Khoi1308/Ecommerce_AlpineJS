@@ -1,6 +1,5 @@
 import { AppData } from "../../../config/db";
 import { CREATED, SUCCESS } from "../../../config/http";
-import { appAssert } from "../../../utils/appAssert";
 import { catchErrors } from "../../../utils/catchErrors";
 import { UpdateProductDto } from "../dtos/update_product.dto";
 import { ProductService } from "../services/product.service";

@@ -6,3 +6,13 @@ export interface ICartItemWithProductId {
   total_price: number;
   product_id: string;
 }
+
+export interface ICart {
+  success: boolean;
+  cart_item: {
+    cart_item_id: string;
+    quantity: number;
+    unit_price: string;
+    is_selected: boolean
+  }
+}

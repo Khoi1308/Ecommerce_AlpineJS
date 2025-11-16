@@ -17,7 +17,7 @@ export class Product {
   @Column()
   product_name!: string;
 
-  @Column({ type: "decimal", precision: 10, scale: 2, default: 0 })
+  @Column({ type: "decimal", precision: 10, scale: 2, default: 0 }) // Manufacturer Suggested Retail Price
   product_price!: number;
 
   // @Column({ type: "decimal" })
@@ -34,10 +34,7 @@ export class Product {
   is_active!: boolean;
 
   @Column({ default: false })
-  is_signature!: boolean;
-
-  // @Column({ default: false })
-  // is_signature!: boolean; // Check product is signature
+  is_signature!: boolean; // Check product is signature
 
   @CreateDateColumn({ type: "timestamp with time zone" })
   createdAt!: Date;
