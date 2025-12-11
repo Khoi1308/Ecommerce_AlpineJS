@@ -2,6 +2,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -34,8 +35,10 @@ export class CampainVoucher {
 
   // RELATIONSHIP
   @ManyToOne(() => Campaign, (campaign) => campaign.campaign_vouchers)
+  @JoinColumn({ name: "campaign_id" })
   campaign!: Campaign;
 
   @ManyToOne(() => Voucher, (voucher) => voucher.campaign_vouchers)
+  @JoinColumn({ name: "voucher_id" })
   voucher!: Voucher;
 }

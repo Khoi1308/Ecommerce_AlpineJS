@@ -6,6 +6,8 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
+import { CampainVoucher } from "./campaignVoucher.entity";
+import { CampaignPromotion } from "./CampaignPromotion";
 
 @Entity("campaigns")
 export class Campaign {
@@ -59,6 +61,9 @@ export class Campaign {
   createdBy!: string;
 
   // RELATIONSHIP
-  @OneToMany(() => CampainVoucher, (c) => c.campain)
+  @OneToMany(() => CampainVoucher, (c) => c.campaign)
   campaign_vouchers!: CampainVoucher[];
+
+  @OneToMany(() => CampaignPromotion, (c) => c.campaign)
+  campaign_promotions!: CampaignPromotion[];
 }
