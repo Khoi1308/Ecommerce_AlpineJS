@@ -1,5 +1,6 @@
 import {
   Column,
+  OneToMany,
   CreateDateColumn,
   Entity,
   PrimaryGeneratedColumn,
@@ -56,4 +57,8 @@ export class Campaign {
 
   @Column({ type: "uuid" })
   createdBy!: string;
+
+  // RELATIONSHIP
+  @OneToMany(() => CampainVoucher, (c) => c.campain)
+  campaign_vouchers!: CampainVoucher[];
 }
