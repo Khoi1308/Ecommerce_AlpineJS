@@ -1,7 +1,7 @@
 import { CREATED } from "../../config/http";
 import { appAssert } from "../../utils/appAssert";
 import { catchErrors } from "../../utils/catchErrors";
-import { VoucherService } from "./voucher.service";
+import { VoucherService } from "./services/voucher.service";
 
 export class VoucherControler {
   private voucher_service: VoucherService;
