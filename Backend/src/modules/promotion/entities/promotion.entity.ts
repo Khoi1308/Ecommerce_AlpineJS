@@ -4,6 +4,7 @@ import {
   Entity,
   JoinTable,
   ManyToMany,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from "typeorm";
 import { Category } from "../../category/entities/category.entity";
@@ -11,6 +12,7 @@ import {
   IPromotionScope,
   IPromotionType,
 } from "../interfaces/promotion.interface";
+import { CampaignPromotion } from "../../campaign/entities/CampaignPromotion";
 
 @Entity("promotions")
 export class Promotion {
@@ -76,4 +78,7 @@ export class Promotion {
     },
   })
   categories!: Category[];
+
+  @OneToMany(() => CampaignPromotion, (c) => c.promotion)
+  campaign_promotions!: CampaignPromotion[];
 }

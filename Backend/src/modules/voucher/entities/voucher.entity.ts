@@ -3,6 +3,7 @@ import {
   CreateDateColumn,
   Entity,
   OneToMany,
+  ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
@@ -13,7 +14,11 @@ import {
   IVoucherType,
 } from "../interfaces/voucher.interface";
 import { UserVoucherClaim, UserVoucherUsage } from "./voucherUser.entity";
-import { VoucherExcludedProduct } from "./voucherProduct.entity";
+import {
+  VoucherApplicableProduct,
+  VoucherExcludedProduct,
+} from "./voucherProduct.entity";
+import { CampainVoucher } from "../../campaign/entities/campaignVoucher.entity";
 
 @Entity("vouchers")
 export class Voucher {
@@ -115,5 +120,11 @@ export class Voucher {
   usages!: UserVoucherUsage[];
 
   @OneToMany(() => VoucherExcludedProduct, (ex_product) => ex_product.voucher)
-  excluded_products!: VoucherExcludedProduct[;
+  excluded_products!: VoucherExcludedProduct[];
+
+  @OneToMany(() => VoucherApplicableProduct, (app_prod) => app_prod.voucher)
+  applicable_products!: VoucherApplicableProduct[];
+
+  @OneToMany(() => CampainVoucher, (c) => c.voucher)
+  campaign_vouchers!: CampainVoucher[];
 }
